@@ -43,6 +43,15 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
         Identifique-se no gov.br com:
       </h2>
       
+      <div className="flex items-center mb-4">
+        <img 
+          src="https://i.postimg.cc/3xC9TBzZ/id-card-solid.png" 
+          alt="ID Card" 
+          className="w-5 h-5 mr-2"
+        />
+        <span className="text-sm font-medium text-gray-700">Número do CPF</span>
+      </div>
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="cpf" className="gov-label">
