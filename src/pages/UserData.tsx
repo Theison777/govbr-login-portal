@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const UserData: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
@@ -11,6 +12,7 @@ const UserData: React.FC = () => {
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string}[]>([]);
+  const stepsContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -22,6 +24,12 @@ const UserData: React.FC = () => {
       navigate('/');
     }
   }, [location.state, navigate]);
+  
+  useEffect(() => {
+    if (stepsContainerRef.current && analysisSteps.length > 0) {
+      stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [analysisSteps]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -182,27 +190,29 @@ const UserData: React.FC = () => {
               </div>
             </>
           ) : !analysisComplete ? (
-            <div className="py-4">
-              <h3 className="text-govblue-700 font-medium mb-4 text-center">Análise em andamento...</h3>
+            <div className="py-2">
+              <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <div className="space-y-2 mb-6 w-full">
-                {analysisSteps.map((step, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center bg-white border border-gray-100 rounded-md py-1.5 px-3 shadow-sm w-full mx-auto"
-                  >
-                    <div className="bg-gray-50 p-1 rounded-md mr-3">
-                      {getStepIcon(step.title)}
+              <ScrollArea className="h-[40vh] w-full pr-2 mb-6">
+                <div className="space-y-2 w-full" ref={stepsContainerRef}>
+                  {analysisSteps.map((step, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center bg-white border border-gray-100 rounded-md py-1.5 px-3 shadow-sm w-[95vw] max-w-full mx-auto mb-2"
+                    >
+                      <div className="bg-gray-50 p-1 rounded-md mr-3">
+                        {getStepIcon(step.title)}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-xs text-gray-800">{step.title}</div>
+                        <div className="text-xs text-gray-500">{step.detail}</div>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-xs text-gray-800">{step.title}</div>
-                      <div className="text-xs text-gray-500">{step.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ScrollArea>
               
-              <div className="flex justify-center">
+              <div className="flex justify-center mt-4">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
               </div>
             </div>
