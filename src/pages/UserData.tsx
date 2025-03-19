@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
+    // Completely redefining the steps array to ensure there are no duplicates
     const steps = [
       {
         title: "Cadastro PIS/Pasep",
