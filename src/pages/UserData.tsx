@@ -76,6 +76,7 @@ const UserData: React.FC = () => {
     ];
     
     setLoading(true);
+    setAnalysisSteps([]);
     
     let currentStep = 0;
     const processStep = () => {
@@ -180,7 +181,32 @@ const UserData: React.FC = () => {
                 </Button>
               </div>
             </>
-          ) : analysisComplete ? (
+          ) : !analysisComplete ? (
+            <div className="py-4">
+              <h3 className="text-govblue-700 font-medium mb-4 text-center">Análise em andamento...</h3>
+              
+              <div className="space-y-2 mb-6 w-full">
+                {analysisSteps.map((step, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-center bg-white border border-gray-100 rounded-md py-1.5 px-3 shadow-sm w-full mx-auto"
+                  >
+                    <div className="bg-gray-50 p-1 rounded-md mr-3">
+                      {getStepIcon(step.title)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-xs text-gray-800">{step.title}</div>
+                      <div className="text-xs text-gray-500">{step.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
+              </div>
+            </div>
+          ) : (
             <>
               <h2 className="font-heading text-xl font-semibold text-red-600 mb-6">
                 Pendências Identificadas
@@ -231,31 +257,6 @@ const UserData: React.FC = () => {
                 </Button>
               </div>
             </>
-          ) : (
-            <div className="py-6">
-              <h3 className="text-govblue-700 font-medium mb-6 text-center">Análise em andamento...</h3>
-              
-              <div className="space-y-2 mb-6">
-                {analysisSteps.map((step, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center bg-white border border-gray-100 rounded-md py-2 px-3 shadow-sm w-full"
-                  >
-                    <div className="bg-gray-50 p-1.5 rounded-md mr-3">
-                      {getStepIcon(step.title)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-sm text-gray-800">{step.title}</div>
-                      <div className="text-xs text-gray-500">{step.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-govblue-600"></div>
-              </div>
-            </div>
           )}
         </div>
       </div>
