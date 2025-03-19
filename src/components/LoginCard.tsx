@@ -52,6 +52,10 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
         <span className="text-sm font-medium text-gray-700">Número do CPF</span>
       </div>
       
+      <p className="text-xs text-gray-500 mb-4 ml-7">
+        Digite seu CPF para criar ou acessar sua conta gov.br
+      </p>
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="cpf" className="gov-label">
