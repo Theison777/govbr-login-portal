@@ -199,14 +199,14 @@ const UserData: React.FC = () => {
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className="flex items-center bg-white border border-gray-100 rounded-md py-2 px-4 shadow-sm w-[98vw] max-w-[98vw] mx-auto mb-2 overflow-visible"
+                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
                     >
-                      <div className="bg-gray-50 p-1.5 rounded-md mr-3">
+                      <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
                         {getStepIcon(step.title)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-gray-800 truncate">{step.title}</div>
-                        <div className="text-sm text-gray-500 whitespace-normal">{step.detail}</div>
+                        <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                        <div className="text-sm text-gray-500 break-words">{step.detail}</div>
                       </div>
                     </div>
                   ))}
