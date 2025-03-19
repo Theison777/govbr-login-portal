@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -5,13 +6,14 @@ import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 
 const UserData: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string}[]>([]);
+  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,6 +32,23 @@ const UserData: React.FC = () => {
       stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [analysisSteps]);
+
+  // Effect to animate progress bars
+  useEffect(() => {
+    const animateProgressBars = () => {
+      setAnalysisSteps(steps => 
+        steps.map(step => {
+          if (step.progress < 100) {
+            return { ...step, progress: Math.min(step.progress + 2, 100) };
+          }
+          return step;
+        })
+      );
+    };
+
+    const intervalId = setInterval(animateProgressBars, 30);
+    return () => clearInterval(intervalId);
+  }, []);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -55,15 +74,18 @@ const UserData: React.FC = () => {
     const analysisStepsList = [
       {
         title: "Exercer atividade remunerada",
-        detail: "Ter exercido atividade remunerada por pelo menos 30 dias"
+        detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
+        progress: 0
       },
       {
         title: "Dados Informados Corretamente",
-        detail: "Ter os dados corretamente informados pelo empregador"
+        detail: "Ter os dados corretamente informados pelo empregador",
+        progress: 0
       },
       {
         title: "Empregadores Contribuintes",
-        detail: "Empregadores contribuem para o PIS ou Pasep"
+        detail: "Empregadores contribuem para o PIS ou Pasep",
+        progress: 0
       }
     ];
     
@@ -187,18 +209,30 @@ const UserData: React.FC = () => {
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
               <ScrollArea className="h-[40vh] w-full p-0 mb-6">
-                <div className="space-y-2 w-full" ref={stepsContainerRef}>
+                <div className="space-y-4 w-full" ref={stepsContainerRef}>
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
+                      className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
                     >
-                      <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
-                        {getStepIcon(step.title)}
+                      <div className="flex items-start mb-2">
+                        <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
+                          {getStepIcon(step.title)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                          <div className="text-sm text-gray-500 break-words">{step.detail}</div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-gray-800">{step.title}</div>
-                        <div className="text-sm text-gray-500 break-words">{step.detail}</div>
+                      
+                      <div className="ml-8 mr-2 mt-1">
+                        <Progress 
+                          className="h-1.5 w-full bg-gray-100" 
+                          value={step.progress}
+                          style={{
+                            '--progress-background': '#0066CC',
+                          } as React.CSSProperties}
+                        />
                       </div>
                     </div>
                   ))}
