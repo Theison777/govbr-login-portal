@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award } from "lucide-react";
+import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award, Briefcase, ClipboardCheck, Building } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -56,7 +57,13 @@ const UserData: React.FC = () => {
   };
 
   const getStepIcon = (step: string) => {
-    if (step.includes("CPF")) {
+    if (step.includes("atividade remunerada")) {
+      return <Briefcase className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
+    } else if (step.includes("Dados Informados")) {
+      return <ClipboardCheck className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
+    } else if (step.includes("Empregadores")) {
+      return <Building className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
+    } else if (step.includes("CPF")) {
       return <Search className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     } else if (step.includes("transferências") || step.includes("movimentações")) {
       return <Clock className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
