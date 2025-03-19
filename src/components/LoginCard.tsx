@@ -53,7 +53,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
       </div>
       
       <p className="text-xs text-gray-500 mb-4 text-center whitespace-nowrap overflow-hidden text-ellipsis">
-        Digite seu CPF para criar ou acessar sua conta gov.br
+        Digite seu CPF para <strong>criar</strong> ou <strong>acessar</strong> sua conta gov.br
       </p>
       
       <form onSubmit={handleSubmit} className="space-y-6">
