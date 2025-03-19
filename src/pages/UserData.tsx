@@ -95,17 +95,8 @@ const UserData: React.FC = () => {
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < analysisStepsList.length) {
-        setAnalysisSteps(prevSteps => {
-          const stepExists = prevSteps.some(
-            step => step.title === analysisStepsList[currentStep].title
-          );
-          
-          if (!stepExists) {
-            return [...prevSteps, analysisStepsList[currentStep]];
-          }
-          return prevSteps;
-        });
-        
+        const newStep = analysisStepsList[currentStep];
+        setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
