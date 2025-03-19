@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, DollarSign, QrCode, Key, Cloud, HelpCircle } from "lucide-react";
 import CPFInput from './CPFInput';
 import { toast } from 'sonner';
 
@@ -86,6 +86,57 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
         >
           Crie sua conta
         </Button>
+      </div>
+
+      {/* Outras opções de identificação */}
+      <div className="mt-6 pt-6 border-t border-gray-200">
+        <h3 className="text-sm font-medium text-gray-700 mb-4">Outras opções de identificação:</h3>
+        
+        <div className="space-y-4">
+          {/* Login com banco */}
+          <div className="flex items-center">
+            <DollarSign className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
+            <div className="flex-1">
+              <span className="text-green-600 font-medium">Login com seu banco</span>
+              <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">SUA CONTA SERÁ PRATA</span>
+            </div>
+          </div>
+          
+          {/* Login com QR code */}
+          <div className="flex items-center">
+            <QrCode className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" />
+            <span className="text-gray-700">Login com QR code</span>
+          </div>
+          
+          {/* Certificado digital */}
+          <div className="flex items-center">
+            <Key className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" />
+            <span className="text-gray-700">Seu certificado digital</span>
+          </div>
+          
+          {/* Certificado digital em nuvem */}
+          <div className="flex items-center">
+            <Cloud className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" />
+            <span className="text-gray-700">Seu certificado digital em nuvem</span>
+          </div>
+        </div>
+        
+        {/* Ajuda e termos */}
+        <div className="mt-6 space-y-4">
+          <div className="flex items-center">
+            <HelpCircle className="h-5 w-5 text-blue-600 mr-3 flex-shrink-0" />
+            <span className="text-blue-600">Está com dúvidas e precisa de ajuda?</span>
+          </div>
+          
+          <div className="text-center">
+            <Button
+              variant="link"
+              className="p-0 h-auto text-blue-600 hover:text-blue-700 text-sm"
+            >
+              Termo de Uso e Aviso de Privacidade
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
