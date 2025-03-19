@@ -52,12 +52,7 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    // Defining the steps array with exactly four unique steps
     const analysisStepsList = [
-      {
-        title: "Cadastro PIS/Pasep",
-        detail: "Verificando se tem cadastro no PIS/Pasep"
-      },
       {
         title: "Exercer atividade remunerada",
         detail: "Ter exercido atividade remunerada por pelo menos 30 dias"
@@ -73,13 +68,11 @@ const UserData: React.FC = () => {
     ];
     
     setLoading(true);
-    // Clear any existing steps to start fresh
     setAnalysisSteps([]);
     
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < analysisStepsList.length) {
-        // Add only one step at a time to the visible list
         setAnalysisSteps(prevSteps => [...prevSteps, analysisStepsList[currentStep]]);
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
@@ -89,7 +82,6 @@ const UserData: React.FC = () => {
       }
     };
     
-    // Start the step processing
     processStep();
   };
 
