@@ -81,6 +81,17 @@ const UserData: React.FC = () => {
 
   return (
     <div className="container max-w-xl mx-auto p-6">
+      <div className="mb-6">
+        <Button
+          variant="outline"
+          onClick={handleGoBack}
+          className="flex items-center"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
+      </div>
+      
       <div className="glass-card rounded-xl p-8 animate-fade-in">
         {!showVerification ? (
           <>
@@ -126,18 +137,9 @@ const UserData: React.FC = () => {
               )}
             </div>
             
-            <div className="flex space-x-4">
+            <div className="flex justify-center">
               <Button
-                variant="outline"
-                className="flex-1"
-                onClick={handleGoBack}
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Voltar
-              </Button>
-              
-              <Button
-                className="gov-button flex-1 rounded-full"
+                className="gov-button rounded-full w-3/4"
                 onClick={handleConfirmData}
               >
                 <CheckCircle className="mr-2 h-4 w-4" />
@@ -186,13 +188,15 @@ const UserData: React.FC = () => {
               </p>
             </div>
             
-            <Button 
-              className="w-full bg-red-600 hover:bg-red-700 rounded-full"
-              onClick={handleRegularize}
-            >
-              <AlertTriangle className="mr-2 h-4 w-4" />
-              Regularizar meu CPF
-            </Button>
+            <div className="flex justify-center">
+              <Button 
+                className="w-3/4 bg-red-600 hover:bg-red-700 rounded-full"
+                onClick={handleRegularize}
+              >
+                <AlertTriangle className="mr-2 h-4 w-4" />
+                Regularizar meu CPF
+              </Button>
+            </div>
           </>
         ) : (
           <div className="text-center py-10">
