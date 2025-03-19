@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -55,20 +54,20 @@ const UserData: React.FC = () => {
     
     const steps = [
       {
-        title: "Análise do CPF",
-        detail: "Verificando situação fiscal e cadastral"
+        title: "Cadastro PIS/Pasep",
+        detail: "Verificando se tem cadastro no PIS/Pasep"
       },
       {
-        title: "Transferências PIX",
-        detail: "Analisando histórico desde 2019"
+        title: "Exercer atividade remunerada",
+        detail: "Ter exercido atividade remunerada por pelo menos 30 dias"
       },
       {
-        title: "Movimentações financeiras",
-        detail: "Verificando transações desde 2020"
+        title: "Dados Informados Corretamente",
+        detail: "Ter os dados corretamente informados pelo empregador"
       },
       {
-        title: "Declarações de IR",
-        detail: "Consultando últimas declarações"
+        title: "Empregadores Contribuintes",
+        detail: "Empregadores contribuem para o PIS ou Pasep"
       },
       {
         title: "Cartão de Crédito",
