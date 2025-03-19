@@ -123,7 +123,7 @@ const UserData: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className="container max-w-6xl mx-auto px-2 pt-1 pb-6 relative">
+      <div className="container max-w-full mx-auto px-1 pt-1 pb-6 relative">
         <div className="absolute top-0 left-0 mt-2 ml-0">
           <Button
             variant="ghost"
@@ -194,12 +194,12 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <ScrollArea className="h-[40vh] w-full pr-1 mb-6">
+              <ScrollArea className="h-[40vh] w-full pr-0 mb-6">
                 <div className="space-y-2 w-full" ref={stepsContainerRef}>
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-[98%] mx-auto"
+                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full mx-auto"
                     >
                       <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
                         {getStepIcon(step.title)}
