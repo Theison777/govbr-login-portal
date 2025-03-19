@@ -80,7 +80,7 @@ const UserData: React.FC = () => {
   return (
     <PageLayout>
       <div className="container max-w-xl mx-auto px-6 pt-1 pb-6 relative">
-        <div className="absolute top-0 left-0 mt-2 ml-2">
+        <div className="absolute top-0 left-0 mt-2 ml-0">
           <Button
             variant="ghost"
             size="icon"
