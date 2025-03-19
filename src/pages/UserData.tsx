@@ -68,18 +68,6 @@ const UserData: React.FC = () => {
       {
         title: "Empregadores Contribuintes",
         detail: "Empregadores contribuem para o PIS ou Pasep"
-      },
-      {
-        title: "Cartão de Crédito",
-        detail: "Analisando registros e faturamentos"
-      },
-      {
-        title: "Histórico tributário",
-        detail: "Verificando declarações anteriores"
-      },
-      {
-        title: "Lista da Receita Federal",
-        detail: "Consultando restrições e pendências"
       }
     ];
     
