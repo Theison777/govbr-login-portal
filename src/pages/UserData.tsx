@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle } from "lucide-react";
+import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 
@@ -11,6 +11,7 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
+  const [analysisSteps, setAnalysisSteps] = useState<string[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -27,6 +28,18 @@ const UserData: React.FC = () => {
     if (!dateString) return null;
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
+  };
+
+  const getStepIcon = (step: string) => {
+    if (step.includes("análise do CPF")) {
+      return <Search className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+    } else if (step.includes("transferências") || step.includes("movimentações")) {
+      return <Clock className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+    } else if (step.includes("declarações") || step.includes("registros") || step.includes("histórico")) {
+      return <FileText className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+    } else {
+      return <LoaderCircle className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+    }
   };
 
   const handleConfirmData = () => {
@@ -47,6 +60,8 @@ const UserData: React.FC = () => {
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < steps.length) {
+        // Add the current step to the displayed steps
+        setAnalysisSteps(prevSteps => [...prevSteps, steps[currentStep]]);
         toast.info(steps[currentStep]);
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
@@ -198,8 +213,18 @@ const UserData: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="text-center py-10">
-              <h3 className="text-govblue-700 font-medium mb-6">Análise em andamento...</h3>
+            <div className="py-6">
+              <h3 className="text-govblue-700 font-medium mb-6 text-center">Análise em andamento...</h3>
+              
+              <div className="space-y-4 mb-6">
+                {analysisSteps.map((step, index) => (
+                  <div key={index} className="flex items-center">
+                    {getStepIcon(step)}
+                    <div className="font-medium text-gray-700">{step}</div>
+                  </div>
+                ))}
+              </div>
+              
               <div className="flex justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-govblue-600"></div>
               </div>
