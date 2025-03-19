@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -133,7 +134,7 @@ const UserData: React.FC = () => {
             
             <div className="flex justify-center">
               <Button
-                className="gov-button rounded-full w-3/4 px-2 py-3 text-sm md:text-base whitespace-normal min-h-[48px]"
+                className="gov-button rounded-full px-4 py-3 text-base w-full max-w-md"
                 onClick={handleConfirmData}
               >
                 <CheckCircle className="mr-2 h-4 w-4 flex-shrink-0" />
@@ -184,7 +185,7 @@ const UserData: React.FC = () => {
             
             <div className="flex justify-center">
               <Button 
-                className="w-3/4 bg-red-600 hover:bg-red-700 rounded-full px-2 py-3 text-sm md:text-base whitespace-normal min-h-[48px]"
+                className="bg-red-600 hover:bg-red-700 rounded-full px-4 py-3 text-base w-full max-w-md"
                 onClick={handleRegularize}
               >
                 <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
