@@ -79,19 +79,19 @@ const UserData: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className="container max-w-xl mx-auto p-6">
-        <div className="mb-2">
+      <div className="container max-w-xl mx-auto px-6 pt-1 pb-6 relative">
+        <div className="absolute top-0 left-0 mt-2 ml-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={handleGoBack}
-            className="text-gray-500 hover:text-gray-700 hover:bg-transparent -ml-2"
+            className="text-gray-500 hover:text-gray-700 hover:bg-transparent"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </div>
         
-        <div className="glass-card rounded-xl p-8 animate-fade-in">
+        <div className="glass-card rounded-xl p-8 animate-fade-in mt-6">
           {!showVerification ? (
             <>
               <h2 className="font-heading text-xl font-semibold text-gray-800 mb-6">
