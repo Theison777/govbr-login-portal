@@ -8,7 +8,7 @@ const LoginLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
       <header className="w-full bg-white shadow-sm py-4">
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-start">
           <GovLogo />
         </div>
       </header>
@@ -25,7 +25,9 @@ const LoginLayout: React.FC = () => {
             </p>
           </div>
           
-          <LoginCard className="opacity-0 animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }} />
+          <LoginCard 
+            className="opacity-0 animate-fade-in" 
+          />
           
           <div className="mt-8 text-center text-sm text-gray-500 opacity-0 animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>
             <p>Seus dados estão protegidos pela Lei Geral de</p>
