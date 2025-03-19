@@ -33,7 +33,6 @@ const UserData: React.FC = () => {
     }
   }, [analysisSteps]);
 
-  // Effect to animate progress bars
   useEffect(() => {
     const animateProgressBars = () => {
       setAnalysisSteps(steps => 
