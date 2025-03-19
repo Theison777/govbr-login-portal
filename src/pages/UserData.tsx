@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -79,14 +80,14 @@ const UserData: React.FC = () => {
   return (
     <PageLayout>
       <div className="container max-w-xl mx-auto p-6">
-        <div className="mb-6">
+        <div className="mb-2">
           <Button
-            variant="outline"
+            variant="ghost"
+            size="icon"
             onClick={handleGoBack}
-            className="flex items-center"
+            className="text-gray-500 hover:text-gray-700 hover:bg-transparent -ml-2"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            <ArrowLeft className="h-5 w-5" />
           </Button>
         </div>
         
