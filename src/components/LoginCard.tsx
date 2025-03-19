@@ -75,18 +75,6 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
           )}
         </Button>
       </form>
-      
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <p className="text-center text-sm text-gray-500">
-          Não possui uma conta gov.br?
-        </p>
-        <Button
-          variant="link"
-          className="w-full text-govblue-600 hover:text-govblue-700 font-medium p-0 h-auto mt-1"
-        >
-          Crie sua conta
-        </Button>
-      </div>
 
       {/* Outras opções de identificação */}
       <div className="mt-6 pt-6 border-t border-gray-200">
