@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, DollarSign, QrCode, Key, Cloud, HelpCircle } from "lucide-react";
@@ -52,7 +51,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
         <span className="text-sm font-medium text-gray-700">Número do CPF</span>
       </div>
       
-      <p className="text-xs text-gray-500 mb-4 text-center whitespace-nowrap overflow-hidden text-ellipsis">
+      <p className="text-xs text-gray-500 mb-4 text-center">
         Digite seu CPF para <strong>criar</strong> ou <strong>acessar</strong> sua conta gov.br
       </p>
       
