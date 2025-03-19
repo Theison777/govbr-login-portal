@@ -73,7 +73,17 @@ const UserData: React.FC = () => {
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < analysisStepsList.length) {
-        setAnalysisSteps(prevSteps => [...prevSteps, analysisStepsList[currentStep]]);
+        setAnalysisSteps(prevSteps => {
+          const stepExists = prevSteps.some(
+            step => step.title === analysisStepsList[currentStep].title
+          );
+          
+          if (!stepExists) {
+            return [...prevSteps, analysisStepsList[currentStep]];
+          }
+          return prevSteps;
+        });
+        
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
@@ -82,7 +92,7 @@ const UserData: React.FC = () => {
       }
     };
     
-    processStep();
+    setTimeout(processStep, 100);
   };
 
   const handleRegularize = () => {
