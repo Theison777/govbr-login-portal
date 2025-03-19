@@ -53,7 +53,7 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    // Completely redefining the steps array to ensure there are no duplicates
+    // Define the steps array with unique steps
     const steps = [
       {
         title: "Cadastro PIS/Pasep",
@@ -80,7 +80,7 @@ const UserData: React.FC = () => {
     const processStep = () => {
       if (currentStep < steps.length) {
         setAnalysisSteps(prevSteps => [...prevSteps, steps[currentStep]]);
-        toast.info(`${steps[currentStep].title}: ${steps[currentStep].detail}`);
+        // Removed toast.info notification
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
