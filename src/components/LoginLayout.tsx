@@ -16,15 +16,6 @@ const LoginLayout: React.FC = () => {
       {/* Main content */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8 opacity-0 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
-            <h1 className="text-3xl font-heading font-bold text-gray-800">
-              Acesse sua conta gov.br
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Informe seu CPF para começar
-            </p>
-          </div>
-          
           <LoginCard 
             className="opacity-0 animate-fade-in" 
           />
