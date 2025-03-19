@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -53,8 +52,8 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    // Define the steps array with unique steps
-    const steps = [
+    // Defining the steps array with exactly four unique steps
+    const analysisStepsList = [
       {
         title: "Cadastro PIS/Pasep",
         detail: "Verificando se tem cadastro no PIS/Pasep"
@@ -74,13 +73,14 @@ const UserData: React.FC = () => {
     ];
     
     setLoading(true);
+    // Clear any existing steps to start fresh
     setAnalysisSteps([]);
     
     let currentStep = 0;
     const processStep = () => {
-      if (currentStep < steps.length) {
-        setAnalysisSteps(prevSteps => [...prevSteps, steps[currentStep]]);
-        // Removed toast.info notification
+      if (currentStep < analysisStepsList.length) {
+        // Add only one step at a time to the visible list
+        setAnalysisSteps(prevSteps => [...prevSteps, analysisStepsList[currentStep]]);
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
@@ -89,6 +89,7 @@ const UserData: React.FC = () => {
       }
     };
     
+    // Start the step processing
     processStep();
   };
 
