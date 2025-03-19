@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -14,17 +13,14 @@ const UserData: React.FC = () => {
   const location = useLocation();
   
   useEffect(() => {
-    // Get stored user data from state
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
     } else {
-      // If no data, redirect back to home
       toast.error("Nenhum dado encontrado. Por favor, faça a consulta novamente.");
       navigate('/');
     }
   }, [location.state, navigate]);
 
-  // Format birth date to Brazilian format
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
     const date = new Date(dateString);
@@ -34,7 +30,6 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    // Simulating analysis steps with timeouts
     const steps = [
       "Iniciando análise do CPF...",
       "Analisando transferências PIX desde 2019...",
@@ -47,7 +42,6 @@ const UserData: React.FC = () => {
     
     setLoading(true);
     
-    // Simulate the analysis process
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < steps.length) {
@@ -139,11 +133,11 @@ const UserData: React.FC = () => {
             
             <div className="flex justify-center">
               <Button
-                className="gov-button rounded-full w-3/4"
+                className="gov-button rounded-full w-3/4 px-2 py-3 text-sm md:text-base whitespace-normal min-h-[48px]"
                 onClick={handleConfirmData}
               >
-                <CheckCircle className="mr-2 h-4 w-4" />
-                Confirmar meus dados
+                <CheckCircle className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span>Confirmar meus dados</span>
               </Button>
             </div>
           </>
@@ -190,11 +184,11 @@ const UserData: React.FC = () => {
             
             <div className="flex justify-center">
               <Button 
-                className="w-3/4 bg-red-600 hover:bg-red-700 rounded-full"
+                className="w-3/4 bg-red-600 hover:bg-red-700 rounded-full px-2 py-3 text-sm md:text-base whitespace-normal min-h-[48px]"
                 onClick={handleRegularize}
               >
-                <AlertTriangle className="mr-2 h-4 w-4" />
-                Regularizar meu CPF
+                <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span>Regularizar meu CPF</span>
               </Button>
             </div>
           </>
