@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle } from "lucide-react";
+import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,6 +13,7 @@ const UserData: React.FC = () => {
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,6 +91,7 @@ const UserData: React.FC = () => {
     
     setLoading(true);
     setAnalysisSteps([]);
+    setShowQualificationButton(false);
     
     let currentStep = 0;
     const processStep = () => {
@@ -110,11 +111,16 @@ const UserData: React.FC = () => {
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
         setLoading(false);
-        setAnalysisComplete(true);
+        setShowQualificationButton(true);
       }
     };
     
     setTimeout(processStep, 100);
+  };
+
+  const handleQualified = () => {
+    setShowQualificationButton(false);
+    setAnalysisComplete(true);
   };
 
   const handleRegularize = () => {
@@ -239,9 +245,21 @@ const UserData: React.FC = () => {
                 </div>
               </ScrollArea>
               
-              <div className="flex justify-center mt-4">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
-              </div>
+              {loading ? (
+                <div className="flex justify-center mt-4">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
+                </div>
+              ) : showQualificationButton && (
+                <div className="flex justify-center mt-6">
+                  <Button 
+                    className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
+                    onClick={handleQualified}
+                  >
+                    <Award className="mr-2 h-5 w-5 flex-shrink-0" />
+                    <span className="font-medium">Você está qualificado a receber</span>
+                  </Button>
+                </div>
+              )}
             </div>
           ) : (
             <>
