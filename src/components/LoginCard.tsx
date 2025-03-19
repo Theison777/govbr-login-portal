@@ -39,8 +39,8 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
 
   return (
     <div className={`glass-card rounded-xl p-8 w-full max-w-md mx-auto animate-fade-in ${className}`}>
-      <h2 className="font-heading text-2xl font-semibold text-gray-800 mb-6 text-center">
-        Identifique-se no gov.br
+      <h2 className="font-heading text-lg font-semibold text-gray-800 mb-6 text-left">
+        Identifique-se no gov.br com:
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
