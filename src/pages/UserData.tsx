@@ -11,7 +11,7 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [analysisSteps, setAnalysisSteps] = useState<string[]>([]);
+  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string}[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -31,14 +31,14 @@ const UserData: React.FC = () => {
   };
 
   const getStepIcon = (step: string) => {
-    if (step.includes("análise do CPF")) {
-      return <Search className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+    if (step.includes("CPF")) {
+      return <Search className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
     } else if (step.includes("transferências") || step.includes("movimentações")) {
-      return <Clock className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+      return <Clock className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
     } else if (step.includes("declarações") || step.includes("registros") || step.includes("histórico")) {
-      return <FileText className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+      return <FileText className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
     } else {
-      return <LoaderCircle className="h-5 w-5 text-govblue-600 mr-3 flex-shrink-0" />;
+      return <LoaderCircle className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
     }
   };
 
@@ -46,13 +46,34 @@ const UserData: React.FC = () => {
     setShowVerification(true);
     
     const steps = [
-      "Iniciando análise do CPF...",
-      "Analisando transferências PIX desde 2019...",
-      "Verificando movimentações financeiras desde 2020...",
-      "Consultando declarações de Imposto de Renda...",
-      "Analisando registros de Cartão de Crédito...",
-      "Verificando histórico de declarações tributárias...",
-      "Consultando lista de restrições da Receita Federal..."
+      {
+        title: "Análise do CPF",
+        detail: "Verificando situação fiscal e cadastral"
+      },
+      {
+        title: "Transferências PIX",
+        detail: "Analisando histórico desde 2019"
+      },
+      {
+        title: "Movimentações financeiras",
+        detail: "Verificando transações desde 2020"
+      },
+      {
+        title: "Declarações de IR",
+        detail: "Consultando últimas declarações"
+      },
+      {
+        title: "Cartão de Crédito",
+        detail: "Analisando registros e faturamentos"
+      },
+      {
+        title: "Histórico tributário",
+        detail: "Verificando declarações anteriores"
+      },
+      {
+        title: "Lista da Receita Federal",
+        detail: "Consultando restrições e pendências"
+      }
     ];
     
     setLoading(true);
@@ -62,7 +83,7 @@ const UserData: React.FC = () => {
       if (currentStep < steps.length) {
         // Add the current step to the displayed steps
         setAnalysisSteps(prevSteps => [...prevSteps, steps[currentStep]]);
-        toast.info(steps[currentStep]);
+        toast.info(`${steps[currentStep].title}: ${steps[currentStep].detail}`);
         currentStep++;
         setTimeout(processStep, 1500 + Math.random() * 500);
       } else {
@@ -218,9 +239,17 @@ const UserData: React.FC = () => {
               
               <div className="space-y-4 mb-6">
                 {analysisSteps.map((step, index) => (
-                  <div key={index} className="flex items-center">
-                    {getStepIcon(step)}
-                    <div className="font-medium text-gray-700">{step}</div>
+                  <div 
+                    key={index} 
+                    className="flex items-start bg-white border border-gray-100 rounded-lg p-3 shadow-sm mx-auto max-w-md"
+                  >
+                    <div className="bg-gray-50 p-2 rounded-md mr-3">
+                      {getStepIcon(step.title)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-800">{step.title}</div>
+                      <div className="text-xs text-gray-500 mt-1">{step.detail}</div>
+                    </div>
                   </div>
                 ))}
               </div>
