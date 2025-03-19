@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, DollarSign, QrCode, Key, Cloud, HelpCircle } from "lucide-react";
@@ -66,9 +67,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
             onValidate={handleValidate}
             aria-describedby="cpf-description"
           />
-          <p id="cpf-description" className="text-sm text-gray-500 mt-1">
-            Digite apenas números
-          </p>
+          {/* Removed the "Digite apenas números" text */}
         </div>
         
         <Button
