@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -32,13 +31,13 @@ const UserData: React.FC = () => {
 
   const getStepIcon = (step: string) => {
     if (step.includes("CPF")) {
-      return <Search className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
+      return <Search className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     } else if (step.includes("transferências") || step.includes("movimentações")) {
-      return <Clock className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
+      return <Clock className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     } else if (step.includes("declarações") || step.includes("registros") || step.includes("histórico")) {
-      return <FileText className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
+      return <FileText className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     } else {
-      return <LoaderCircle className="h-5 w-5 text-govblue-600 flex-shrink-0" />;
+      return <LoaderCircle className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     }
   };
 
@@ -81,7 +80,6 @@ const UserData: React.FC = () => {
     let currentStep = 0;
     const processStep = () => {
       if (currentStep < steps.length) {
-        // Add the current step to the displayed steps
         setAnalysisSteps(prevSteps => [...prevSteps, steps[currentStep]]);
         toast.info(`${steps[currentStep].title}: ${steps[currentStep].detail}`);
         currentStep++;
@@ -237,18 +235,18 @@ const UserData: React.FC = () => {
             <div className="py-6">
               <h3 className="text-govblue-700 font-medium mb-6 text-center">Análise em andamento...</h3>
               
-              <div className="space-y-4 mb-6">
+              <div className="space-y-2 mb-6">
                 {analysisSteps.map((step, index) => (
                   <div 
                     key={index} 
-                    className="flex items-start bg-white border border-gray-100 rounded-lg p-3 shadow-sm mx-auto max-w-md"
+                    className="flex items-center bg-white border border-gray-100 rounded-md py-2 px-3 shadow-sm w-full"
                   >
-                    <div className="bg-gray-50 p-2 rounded-md mr-3">
+                    <div className="bg-gray-50 p-1.5 rounded-md mr-3">
                       {getStepIcon(step.title)}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-800">{step.title}</div>
-                      <div className="text-xs text-gray-500 mt-1">{step.detail}</div>
+                      <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                      <div className="text-xs text-gray-500">{step.detail}</div>
                     </div>
                   </div>
                 ))}
