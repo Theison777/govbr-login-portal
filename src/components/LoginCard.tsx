@@ -61,7 +61,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
         
         <Button
           type="submit"
-          className="gov-button w-full"
+          className="gov-button w-full rounded-full"
           disabled={!isValid || isLoading}
         >
           {isLoading ? (
