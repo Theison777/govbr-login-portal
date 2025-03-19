@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -123,7 +122,7 @@ const UserData: React.FC = () => {
 
   return (
     <PageLayout>
-      <div className="container max-w-xl mx-auto px-6 pt-1 pb-6 relative">
+      <div className="container max-w-5xl mx-auto px-3 pt-1 pb-6 relative">
         <div className="absolute top-0 left-0 mt-2 ml-0">
           <Button
             variant="ghost"
@@ -135,7 +134,7 @@ const UserData: React.FC = () => {
           </Button>
         </div>
         
-        <div className="glass-card rounded-xl p-8 animate-fade-in mt-6">
+        <div className="glass-card rounded-xl p-6 animate-fade-in mt-6">
           {!showVerification ? (
             <>
               <h2 className="font-heading text-xl font-semibold text-gray-800 mb-6">
@@ -191,7 +190,7 @@ const UserData: React.FC = () => {
               </div>
             </>
           ) : !analysisComplete ? (
-            <div className="py-2">
+            <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
               <ScrollArea className="h-[40vh] w-full pr-2 mb-6">
@@ -199,7 +198,7 @@ const UserData: React.FC = () => {
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
+                      className="flex items-start bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-[95%] mx-auto"
                     >
                       <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
                         {getStepIcon(step.title)}
