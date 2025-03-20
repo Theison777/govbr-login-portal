@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,6 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // This effect handles the progress animation for the current step only
   useEffect(() => {
     if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
       return;
@@ -59,10 +57,9 @@ const UserData: React.FC = () => {
         if (newSteps[currentStepIndex] && newSteps[currentStepIndex].progress < 100) {
           newSteps[currentStepIndex] = {
             ...newSteps[currentStepIndex], 
-            progress: Math.min(newSteps[currentStepIndex].progress + 2, 100) // Increased speed from 1 to 2
+            progress: Math.min(newSteps[currentStepIndex].progress + 3, 100)
           };
           
-          // If reached 100%, mark as completed
           if (newSteps[currentStepIndex].progress === 100) {
             newSteps[currentStepIndex].completed = true;
           }
@@ -71,13 +68,11 @@ const UserData: React.FC = () => {
       });
     };
 
-    // Increased animation speed by reducing interval time from 50ms to 30ms
-    const intervalId = setInterval(animateCurrentStep, 30);
+    const intervalId = setInterval(animateCurrentStep, 25);
 
     return () => clearInterval(intervalId);
   }, [analysisSteps, currentStepIndex]);
 
-  // This effect checks if the current step is complete and adds the next step
   useEffect(() => {
     if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
       return;
@@ -86,10 +81,7 @@ const UserData: React.FC = () => {
     const currentStep = analysisSteps[currentStepIndex];
     
     if (currentStep && currentStep.progress === 100) {
-      // Current step is complete
-      
       if (currentStepIndex === 0) {
-        // First step complete, add second step
         setTimeout(() => {
           setAnalysisSteps(prevSteps => [
             ...prevSteps,
@@ -103,7 +95,6 @@ const UserData: React.FC = () => {
           setCurrentStepIndex(1);
         }, 500);
       } else if (currentStepIndex === 1) {
-        // Second step complete, add third step
         setTimeout(() => {
           setAnalysisSteps(prevSteps => [
             ...prevSteps,
@@ -117,7 +108,6 @@ const UserData: React.FC = () => {
           setCurrentStepIndex(2);
         }, 500);
       } else if (currentStepIndex === 2) {
-        // All steps are complete
         if (!showQualificationButton) {
           setTimeout(() => {
             setShowQualificationButton(true);
@@ -155,13 +145,11 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    // Reset all states
     setLoading(true);
     setAnalysisSteps([]);
     setCurrentStepIndex(0);
     setShowQualificationButton(false);
     
-    // Add only first step initially
     setTimeout(() => {
       setAnalysisSteps([
         {
