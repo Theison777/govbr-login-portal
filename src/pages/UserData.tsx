@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,7 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // This effect handles the progress animation and adding new steps when previous ones complete
+  // This effect handles the progress animation for the current step only
   useEffect(() => {
     if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
       return;
@@ -71,7 +70,7 @@ const UserData: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [analysisSteps, currentStepIndex]);
 
-  // This effect checks if the current step is complete and moves to next step
+  // This effect checks if the current step is complete and adds the next step
   useEffect(() => {
     if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
       return;
@@ -82,12 +81,33 @@ const UserData: React.FC = () => {
     if (currentStep && currentStep.progress === 100) {
       // Current step is complete
       
-      if (currentStepIndex < analysisSteps.length - 1) {
-        // Move to next step
+      if (currentStepIndex === 0) {
+        // First step complete, add second step
         setTimeout(() => {
-          setCurrentStepIndex(prevIndex => prevIndex + 1);
-        }, 500); // Small delay before moving to next step
-      } else {
+          setAnalysisSteps(prevSteps => [
+            ...prevSteps,
+            {
+              title: "Dados Informados Corretamente",
+              detail: "Ter os dados corretamente informados pelo empregador",
+              progress: 0
+            }
+          ]);
+          setCurrentStepIndex(1);
+        }, 500);
+      } else if (currentStepIndex === 1) {
+        // Second step complete, add third step
+        setTimeout(() => {
+          setAnalysisSteps(prevSteps => [
+            ...prevSteps,
+            {
+              title: "Empregadores Contribuintes",
+              detail: "Empregadores contribuem para o PIS ou Pasep",
+              progress: 0
+            }
+          ]);
+          setCurrentStepIndex(2);
+        }, 500);
+      } else if (currentStepIndex === 2) {
         // All steps are complete
         if (!showQualificationButton) {
           setTimeout(() => {
@@ -126,24 +146,7 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
-    const analysisStepsList = [
-      {
-        title: "Exercer atividade remunerada",
-        detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
-        progress: 0
-      },
-      {
-        title: "Dados Informados Corretamente",
-        detail: "Ter os dados corretamente informados pelo empregador",
-        progress: 0
-      },
-      {
-        title: "Empregadores Contribuintes",
-        detail: "Empregadores contribuem para o PIS ou Pasep",
-        progress: 0
-      }
-    ];
-    
+    // Reset all states
     setLoading(true);
     setAnalysisSteps([]);
     setCurrentStepIndex(0);
@@ -151,7 +154,13 @@ const UserData: React.FC = () => {
     
     // Add only first step initially
     setTimeout(() => {
-      setAnalysisSteps([analysisStepsList[0]]);
+      setAnalysisSteps([
+        {
+          title: "Exercer atividade remunerada",
+          detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
+          progress: 0
+        }
+      ]);
     }, 800);
   };
 
@@ -259,44 +268,32 @@ const UserData: React.FC = () => {
                 onWheel={handleScrollAreaInteraction}
               >
                 <div className="space-y-4 w-full" ref={stepsContainerRef}>
-                  {analysisSteps.map((step, index) => {
-                    // Only add the second step when the first reaches 100%
-                    if (index === 1 && analysisSteps[0].progress < 100) {
-                      return null;
-                    }
-                    
-                    // Only add the third step when the second reaches 100%
-                    if (index === 2 && (analysisSteps.length < 2 || analysisSteps[1].progress < 100)) {
-                      return null;
-                    }
-                    
-                    return (
-                      <div 
-                        key={index} 
-                        className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in"
-                      >
-                        <div className="flex items-start mb-2">
-                          <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
-                            {getStepIcon(step.title)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm text-gray-800">{step.title}</div>
-                            <div className="text-sm text-gray-500 break-words">{step.detail}</div>
-                          </div>
+                  {analysisSteps.map((step, index) => (
+                    <div 
+                      key={index} 
+                      className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in"
+                    >
+                      <div className="flex items-start mb-2">
+                        <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
+                          {getStepIcon(step.title)}
                         </div>
-                        
-                        <div className="ml-8 mr-2 mt-1">
-                          <Progress 
-                            className="h-1.5 w-full bg-gray-100" 
-                            value={step.progress}
-                            style={{
-                              '--progress-background': '#0066CC',
-                            } as React.CSSProperties}
-                          />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                          <div className="text-sm text-gray-500 break-words">{step.detail}</div>
                         </div>
                       </div>
-                    );
-                  })}
+                      
+                      <div className="ml-8 mr-2 mt-1">
+                        <Progress 
+                          className="h-1.5 w-full bg-gray-100" 
+                          value={step.progress}
+                          style={{
+                            '--progress-background': '#0066CC',
+                          } as React.CSSProperties}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </ScrollArea>
               
