@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -13,33 +12,13 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
-  const [activeSteps, setActiveSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Store analysis steps data
-  const analysisStepsList = [
-    {
-      title: "Exercer atividade remunerada",
-      detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
-      progress: 0
-    },
-    {
-      title: "Dados Informados Corretamente",
-      detail: "Ter os dados corretamente informados pelo empregador",
-      progress: 0
-    },
-    {
-      title: "Empregadores Contribuintes",
-      detail: "Empregadores contribuem para o PIS ou Pasep",
-      progress: 0
-    }
-  ];
   
   useEffect(() => {
     if (location.state && location.state.userData) {
@@ -51,10 +30,10 @@ const UserData: React.FC = () => {
   }, [location.state, navigate]);
   
   useEffect(() => {
-    if (stepsContainerRef.current && activeSteps.length > 0 && autoScroll) {
+    if (stepsContainerRef.current && analysisSteps.length > 0 && autoScroll) {
       stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [activeSteps, autoScroll]);
+  }, [analysisSteps, autoScroll]);
 
   const handleScrollAreaInteraction = () => {
     setAutoScroll(false);
@@ -66,72 +45,21 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // Start verification process
   useEffect(() => {
-    if (showVerification && loading) {
-      // Start with only the first step
-      setActiveSteps([{ ...analysisStepsList[0], progress: 0 }]);
-      setCurrentStepIndex(0);
-    }
-  }, [showVerification, loading]);
-
-  // Handle progress animation for the current step
-  useEffect(() => {
-    if (!activeSteps.length || currentStepIndex >= activeSteps.length) return;
-    
-    const animateProgressBar = () => {
-      setActiveSteps(prevSteps => {
-        const updatedSteps = [...prevSteps];
-        const currentStep = updatedSteps[currentStepIndex];
-        
-        if (currentStep.progress < 100) {
-          updatedSteps[currentStepIndex] = {
-            ...currentStep,
-            progress: Math.min(currentStep.progress + 1, 100)
-          };
-        }
-        
-        return updatedSteps;
-      });
+    const animateProgressBars = () => {
+      setAnalysisSteps(steps => 
+        steps.map(step => {
+          if (step.progress < 100) {
+            return { ...step, progress: Math.min(step.progress + 1, 100) };
+          }
+          return step;
+        })
+      );
     };
 
-    const intervalId = setInterval(animateProgressBar, 50);
+    const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
-  }, [activeSteps, currentStepIndex]);
-
-  // Handle step progression
-  useEffect(() => {
-    if (!activeSteps.length) return;
-    
-    const currentStep = activeSteps[currentStepIndex];
-    
-    if (currentStep && currentStep.progress === 100) {
-      // Current step is complete
-      if (currentStepIndex < analysisStepsList.length - 1) {
-        // If there's a next step, add it after a delay
-        const nextStepIndex = currentStepIndex + 1;
-        
-        const timer = setTimeout(() => {
-          setActiveSteps(prevSteps => [
-            ...prevSteps,
-            { ...analysisStepsList[nextStepIndex], progress: 0 }
-          ]);
-          setCurrentStepIndex(nextStepIndex);
-        }, 500);
-        
-        return () => clearTimeout(timer);
-      } 
-      else if (currentStepIndex === analysisStepsList.length - 1 && !showQualificationButton) {
-        // If this is the last step and it's complete, show the button
-        const timer = setTimeout(() => {
-          setLoading(false);
-          setShowQualificationButton(true);
-        }, 500);
-        
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [activeSteps, currentStepIndex, analysisStepsList, showQualificationButton]);
+  }, []);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -159,10 +87,43 @@ const UserData: React.FC = () => {
 
   const handleConfirmData = () => {
     setShowVerification(true);
+    
+    const analysisStepsList = [
+      {
+        title: "Exercer atividade remunerada",
+        detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
+        progress: 0
+      },
+      {
+        title: "Dados Informados Corretamente",
+        detail: "Ter os dados corretamente informados pelo empregador",
+        progress: 0
+      },
+      {
+        title: "Empregadores Contribuintes",
+        detail: "Empregadores contribuem para o PIS ou Pasep",
+        progress: 0
+      }
+    ];
+    
     setLoading(true);
-    setActiveSteps([]);
+    setAnalysisSteps([]);
     setShowQualificationButton(false);
-    setCurrentStepIndex(0);
+    
+    let currentStep = 0;
+    const processStep = () => {
+      if (currentStep < analysisStepsList.length) {
+        const newStep = analysisStepsList[currentStep];
+        setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
+        currentStep++;
+        setTimeout(processStep, 2500 + Math.random() * 500);
+      } else {
+        setLoading(false);
+        setShowQualificationButton(true);
+      }
+    };
+    
+    setTimeout(processStep, 800);
   };
 
   const handleQualified = () => {
@@ -269,7 +230,7 @@ const UserData: React.FC = () => {
                 onWheel={handleScrollAreaInteraction}
               >
                 <div className="space-y-4 w-full" ref={stepsContainerRef}>
-                  {activeSteps.map((step, index) => (
+                  {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
                       className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
@@ -298,13 +259,11 @@ const UserData: React.FC = () => {
                 </div>
               </ScrollArea>
               
-              {loading && !showQualificationButton && (
+              {loading ? (
                 <div className="flex justify-center mt-4">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
                 </div>
-              )}
-              
-              {showQualificationButton && (
+              ) : showQualificationButton && (
                 <div className="flex justify-center mt-6">
                   <Button 
                     className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
