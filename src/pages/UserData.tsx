@@ -13,7 +13,8 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [activeSteps, setActiveSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
@@ -50,10 +51,10 @@ const UserData: React.FC = () => {
   }, [location.state, navigate]);
   
   useEffect(() => {
-    if (stepsContainerRef.current && analysisSteps.length > 0 && autoScroll) {
+    if (stepsContainerRef.current && activeSteps.length > 0 && autoScroll) {
       stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [analysisSteps, autoScroll]);
+  }, [activeSteps, autoScroll]);
 
   const handleScrollAreaInteraction = () => {
     setAutoScroll(false);
@@ -65,22 +66,28 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // Animation for the current step only
+  // Start verification process
   useEffect(() => {
-    if (!analysisSteps.length) return;
-    
-    const currentStep = analysisSteps[analysisSteps.length - 1];
-    if (currentStep.progress >= 100) return;
+    if (showVerification && loading) {
+      // Start with only the first step
+      setActiveSteps([{ ...analysisStepsList[0], progress: 0 }]);
+      setCurrentStepIndex(0);
+    }
+  }, [showVerification, loading]);
+
+  // Handle progress animation for the current step
+  useEffect(() => {
+    if (!activeSteps.length || currentStepIndex >= activeSteps.length) return;
     
     const animateProgressBar = () => {
-      setAnalysisSteps(prevSteps => {
+      setActiveSteps(prevSteps => {
         const updatedSteps = [...prevSteps];
-        const lastStepIndex = updatedSteps.length - 1;
+        const currentStep = updatedSteps[currentStepIndex];
         
-        if (updatedSteps[lastStepIndex].progress < 100) {
-          updatedSteps[lastStepIndex] = {
-            ...updatedSteps[lastStepIndex],
-            progress: Math.min(updatedSteps[lastStepIndex].progress + 1, 100)
+        if (currentStep.progress < 100) {
+          updatedSteps[currentStepIndex] = {
+            ...currentStep,
+            progress: Math.min(currentStep.progress + 1, 100)
           };
         }
         
@@ -90,33 +97,32 @@ const UserData: React.FC = () => {
 
     const intervalId = setInterval(animateProgressBar, 50);
     return () => clearInterval(intervalId);
-  }, [analysisSteps]);
+  }, [activeSteps, currentStepIndex]);
 
-  // Add next step when current step reaches 100%
+  // Handle step progression
   useEffect(() => {
-    if (!analysisSteps.length) return;
+    if (!activeSteps.length) return;
     
-    const currentStep = analysisSteps[analysisSteps.length - 1];
+    const currentStep = activeSteps[currentStepIndex];
     
-    if (currentStep && currentStep.progress >= 100) {
-      const currentStepIndex = analysisSteps.length - 1;
-      
-      // If this is not the last step, add the next step
+    if (currentStep && currentStep.progress === 100) {
+      // Current step is complete
       if (currentStepIndex < analysisStepsList.length - 1) {
+        // If there's a next step, add it after a delay
         const nextStepIndex = currentStepIndex + 1;
         
-        // Add a delay before showing the next step
         const timer = setTimeout(() => {
-          setAnalysisSteps(prevSteps => [
+          setActiveSteps(prevSteps => [
             ...prevSteps,
             { ...analysisStepsList[nextStepIndex], progress: 0 }
           ]);
+          setCurrentStepIndex(nextStepIndex);
         }, 500);
         
         return () => clearTimeout(timer);
       } 
-      // If this is the last step and it's complete, show the button
       else if (currentStepIndex === analysisStepsList.length - 1 && !showQualificationButton) {
+        // If this is the last step and it's complete, show the button
         const timer = setTimeout(() => {
           setLoading(false);
           setShowQualificationButton(true);
@@ -125,7 +131,7 @@ const UserData: React.FC = () => {
         return () => clearTimeout(timer);
       }
     }
-  }, [analysisSteps, analysisStepsList, showQualificationButton]);
+  }, [activeSteps, currentStepIndex, analysisStepsList, showQualificationButton]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -154,13 +160,9 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     setLoading(true);
-    setAnalysisSteps([]);
+    setActiveSteps([]);
     setShowQualificationButton(false);
-    
-    // Start with only the first step
-    setTimeout(() => {
-      setAnalysisSteps([{ ...analysisStepsList[0], progress: 0 }]);
-    }, 800);
+    setCurrentStepIndex(0);
   };
 
   const handleQualified = () => {
@@ -267,7 +269,7 @@ const UserData: React.FC = () => {
                 onWheel={handleScrollAreaInteraction}
               >
                 <div className="space-y-4 w-full" ref={stepsContainerRef}>
-                  {analysisSteps.map((step, index) => (
+                  {activeSteps.map((step, index) => (
                     <div 
                       key={index} 
                       className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
