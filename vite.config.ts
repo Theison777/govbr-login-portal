@@ -20,15 +20,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Ensure the output directory is correct for Lovable deployment
+  // Configurações otimizadas para implantação na Lovable
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     assetsDir: 'assets',
-    // Ensure the build is optimized for production
     minify: true,
     sourcemap: false,
+    // Melhorar a compatibilidade com navegadores
+    target: 'es2015',
+    // Otimizações para produção
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1000,
   },
-  // Make sure base path is set to root
+  // Configuração base para garantir que os caminhos estejam corretos
   base: '/',
 }));
