@@ -55,7 +55,7 @@ const UserData: React.FC = () => {
     const animateProgressBars = () => {
       setAnalysisSteps(steps => 
         steps.map((step, index) => {
-          // Only animate the current/last step
+          // Only animate the current step (last in the array)
           if (index === steps.length - 1 && step.progress < 100) {
             return { ...step, progress: Math.min(step.progress + 1, 100) };
           }
@@ -68,30 +68,30 @@ const UserData: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [analysisSteps]);
 
-  // Monitor step completion and add next step only when current one is 100% complete
+  // Monitor the current step progress and add the next step sequentially
   useEffect(() => {
     if (!analysisSteps.length || currentStepIndex >= allStepsData.length) return;
     
     const currentStep = analysisSteps[analysisSteps.length - 1];
     
-    // If current step is complete and there are more steps to add
-    if (currentStep && currentStep.progress >= 100 && currentStepIndex < allStepsData.length - 1) {
-      const nextStepIndex = currentStepIndex + 1;
-      setCurrentStepIndex(nextStepIndex);
-      
-      // Add the next step with a slight delay after current one completes
-      setTimeout(() => {
-        setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[nextStepIndex]]);
-      }, 500);
-    }
-    
-    // Only show qualification button when all steps are complete
-    // and the last step has reached 100%
-    if (currentStepIndex === allStepsData.length - 1 && currentStep.progress >= 100 && !showQualificationButton) {
-      setTimeout(() => {
-        setLoading(false);
-        setShowQualificationButton(true);
-      }, 300); // Small delay to ensure progress bar is visibly complete
+    // When the current step reaches 100%
+    if (currentStep && currentStep.progress >= 100) {
+      // If there are more steps to add
+      if (currentStepIndex < allStepsData.length - 1) {
+        // Delay before adding the next step
+        setTimeout(() => {
+          setCurrentStepIndex(prevIndex => prevIndex + 1);
+          setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[currentStepIndex + 1]]);
+        }, 500);
+      } 
+      // If this was the last step and button isn't showing yet
+      else if (currentStepIndex === allStepsData.length - 1 && !showQualificationButton) {
+        // Delay before showing the button
+        setTimeout(() => {
+          setLoading(false);
+          setShowQualificationButton(true);
+        }, 500);
+      }
     }
   }, [analysisSteps, currentStepIndex, allStepsData, showQualificationButton]);
 
