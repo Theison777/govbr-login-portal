@@ -16,12 +16,29 @@ const UserData: React.FC = () => {
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
-  const [allStepsData, setAllStepsData] = useState<{title: string, detail: string, progress: number}[]>([]);
-  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Store analysis steps data
+  const analysisStepsList = [
+    {
+      title: "Exercer atividade remunerada",
+      detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
+      progress: 0
+    },
+    {
+      title: "Dados Informados Corretamente",
+      detail: "Ter os dados corretamente informados pelo empregador",
+      progress: 0
+    },
+    {
+      title: "Empregadores Contribuintes",
+      detail: "Empregadores contribuem para o PIS ou Pasep",
+      progress: 0
+    }
+  ];
   
   useEffect(() => {
     if (location.state && location.state.userData) {
@@ -48,52 +65,67 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // Progress bar animation
+  // Animation for the current step only
   useEffect(() => {
     if (!analysisSteps.length) return;
     
-    const animateProgressBars = () => {
-      setAnalysisSteps(steps => 
-        steps.map((step, index) => {
-          // Only animate the current/last step
-          if (index === steps.length - 1 && step.progress < 100) {
-            return { ...step, progress: Math.min(step.progress + 1, 100) };
-          }
-          return step;
-        })
-      );
+    const currentStep = analysisSteps[analysisSteps.length - 1];
+    if (currentStep.progress >= 100) return;
+    
+    const animateProgressBar = () => {
+      setAnalysisSteps(prevSteps => {
+        const updatedSteps = [...prevSteps];
+        const lastStepIndex = updatedSteps.length - 1;
+        
+        if (updatedSteps[lastStepIndex].progress < 100) {
+          updatedSteps[lastStepIndex] = {
+            ...updatedSteps[lastStepIndex],
+            progress: Math.min(updatedSteps[lastStepIndex].progress + 1, 100)
+          };
+        }
+        
+        return updatedSteps;
+      });
     };
 
-    const intervalId = setInterval(animateProgressBars, 50);
+    const intervalId = setInterval(animateProgressBar, 50);
     return () => clearInterval(intervalId);
   }, [analysisSteps]);
 
-  // Monitor step completion and add next step only when current one is 100% complete
+  // Add next step when current step reaches 100%
   useEffect(() => {
-    if (!analysisSteps.length || currentStepIndex >= allStepsData.length) return;
+    if (!analysisSteps.length) return;
     
     const currentStep = analysisSteps[analysisSteps.length - 1];
     
-    // If current step is complete and there are more steps to add
-    if (currentStep && currentStep.progress >= 100 && currentStepIndex < allStepsData.length - 1) {
-      const nextStepIndex = currentStepIndex + 1;
-      setCurrentStepIndex(nextStepIndex);
+    if (currentStep && currentStep.progress >= 100) {
+      const currentStepIndex = analysisSteps.length - 1;
       
-      // Add the next step with a slight delay after current one completes
-      setTimeout(() => {
-        setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[nextStepIndex]]);
-      }, 500);
+      // If this is not the last step, add the next step
+      if (currentStepIndex < analysisStepsList.length - 1) {
+        const nextStepIndex = currentStepIndex + 1;
+        
+        // Add a delay before showing the next step
+        const timer = setTimeout(() => {
+          setAnalysisSteps(prevSteps => [
+            ...prevSteps,
+            { ...analysisStepsList[nextStepIndex], progress: 0 }
+          ]);
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      } 
+      // If this is the last step and it's complete, show the button
+      else if (currentStepIndex === analysisStepsList.length - 1 && !showQualificationButton) {
+        const timer = setTimeout(() => {
+          setLoading(false);
+          setShowQualificationButton(true);
+        }, 500);
+        
+        return () => clearTimeout(timer);
+      }
     }
-    
-    // Only show qualification button when all steps are complete
-    // and the last step has reached 100%
-    if (currentStepIndex === allStepsData.length - 1 && currentStep.progress >= 100 && !showQualificationButton) {
-      setTimeout(() => {
-        setLoading(false);
-        setShowQualificationButton(true);
-      }, 300); // Small delay to ensure progress bar is visibly complete
-    }
-  }, [analysisSteps, currentStepIndex, allStepsData, showQualificationButton]);
+  }, [analysisSteps, analysisStepsList, showQualificationButton]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -121,34 +153,13 @@ const UserData: React.FC = () => {
 
   const handleConfirmData = () => {
     setShowVerification(true);
-    
-    const analysisStepsList = [
-      {
-        title: "Exercer atividade remunerada",
-        detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
-        progress: 0
-      },
-      {
-        title: "Dados Informados Corretamente",
-        detail: "Ter os dados corretamente informados pelo empregador",
-        progress: 0
-      },
-      {
-        title: "Empregadores Contribuintes",
-        detail: "Empregadores contribuem para o PIS ou Pasep",
-        progress: 0
-      }
-    ];
-    
     setLoading(true);
     setAnalysisSteps([]);
     setShowQualificationButton(false);
-    setAllStepsData(analysisStepsList);
-    setCurrentStepIndex(0);
     
-    // Add first step with slight delay
+    // Start with only the first step
     setTimeout(() => {
-      setAnalysisSteps([analysisStepsList[0]]);
+      setAnalysisSteps([{ ...analysisStepsList[0], progress: 0 }]);
     }, 800);
   };
 
