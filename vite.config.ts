@@ -24,5 +24,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    // Make sure assets are handled correctly
+    assetsDir: 'assets',
   },
+  // Add base config to handle subdirectory deployments if needed
+  base: '/',
 }));
