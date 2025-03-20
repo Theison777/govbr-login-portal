@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,9 @@ const UserData: React.FC = () => {
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
+  const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -28,10 +31,22 @@ const UserData: React.FC = () => {
   }, [location.state, navigate]);
   
   useEffect(() => {
-    if (stepsContainerRef.current && analysisSteps.length > 0) {
+    if (stepsContainerRef.current && analysisSteps.length > 0 && autoScroll) {
       stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [analysisSteps]);
+  }, [analysisSteps, autoScroll]);
+
+  // Enable touch and mouse interaction while maintaining auto-scroll for new steps
+  const handleScrollAreaInteraction = () => {
+    setAutoScroll(false);
+    
+    // Re-enable auto-scroll after 3 seconds of inactivity
+    const timer = setTimeout(() => {
+      setAutoScroll(true);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  };
 
   useEffect(() => {
     const animateProgressBars = () => {
@@ -210,7 +225,13 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <ScrollArea className="h-[40vh] w-full p-0 mb-6">
+              <ScrollArea 
+                className="h-[40vh] w-full p-0 mb-6"
+                ref={scrollAreaRef}
+                onTouchStart={handleScrollAreaInteraction}
+                onMouseDown={handleScrollAreaInteraction}
+                onWheel={handleScrollAreaInteraction}
+              >
                 <div className="space-y-4 w-full" ref={stepsContainerRef}>
                   {analysisSteps.map((step, index) => (
                     <div 
