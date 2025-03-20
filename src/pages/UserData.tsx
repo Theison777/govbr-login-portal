@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number, completed: boolean}[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
@@ -58,14 +59,20 @@ const UserData: React.FC = () => {
         if (newSteps[currentStepIndex] && newSteps[currentStepIndex].progress < 100) {
           newSteps[currentStepIndex] = {
             ...newSteps[currentStepIndex], 
-            progress: Math.min(newSteps[currentStepIndex].progress + 1, 100)
+            progress: Math.min(newSteps[currentStepIndex].progress + 2, 100) // Increased speed from 1 to 2
           };
+          
+          // If reached 100%, mark as completed
+          if (newSteps[currentStepIndex].progress === 100) {
+            newSteps[currentStepIndex].completed = true;
+          }
         }
         return newSteps;
       });
     };
 
-    const intervalId = setInterval(animateCurrentStep, 50);
+    // Increased animation speed by reducing interval time from 50ms to 30ms
+    const intervalId = setInterval(animateCurrentStep, 30);
 
     return () => clearInterval(intervalId);
   }, [analysisSteps, currentStepIndex]);
@@ -89,7 +96,8 @@ const UserData: React.FC = () => {
             {
               title: "Dados Informados Corretamente",
               detail: "Ter os dados corretamente informados pelo empregador",
-              progress: 0
+              progress: 0,
+              completed: false
             }
           ]);
           setCurrentStepIndex(1);
@@ -102,7 +110,8 @@ const UserData: React.FC = () => {
             {
               title: "Empregadores Contribuintes",
               detail: "Empregadores contribuem para o PIS ou Pasep",
-              progress: 0
+              progress: 0,
+              completed: false
             }
           ]);
           setCurrentStepIndex(2);
@@ -158,7 +167,8 @@ const UserData: React.FC = () => {
         {
           title: "Exercer atividade remunerada",
           detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
-          progress: 0
+          progress: 0,
+          completed: false
         }
       ]);
     }, 800);
@@ -274,11 +284,17 @@ const UserData: React.FC = () => {
                       className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in"
                     >
                       <div className="flex items-start mb-2">
-                        <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
-                          {getStepIcon(step.title)}
+                        <div className={`${step.completed ? 'bg-green-50' : 'bg-gray-50'} p-1.5 rounded-md mr-3 mt-1`}>
+                          {step.completed ? (
+                            <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          ) : (
+                            getStepIcon(step.title)
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                          <div className={`font-medium text-sm ${step.completed ? 'text-green-700' : 'text-gray-800'}`}>
+                            {step.title}
+                          </div>
                           <div className="text-sm text-gray-500 break-words">{step.detail}</div>
                         </div>
                       </div>
@@ -287,9 +303,7 @@ const UserData: React.FC = () => {
                         <Progress 
                           className="h-1.5 w-full bg-gray-100" 
                           value={step.progress}
-                          style={{
-                            '--progress-background': '#0066CC',
-                          } as React.CSSProperties}
+                          isComplete={step.completed}
                         />
                       </div>
                     </div>
