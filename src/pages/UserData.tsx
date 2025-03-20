@@ -48,30 +48,6 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
-  // Monitor progress of current step and add next step when current one completes
-  useEffect(() => {
-    if (!analysisSteps.length || currentStepIndex >= allStepsData.length) return;
-    
-    const currentStep = analysisSteps[analysisSteps.length - 1];
-    
-    // If current step is complete and there are more steps to add
-    if (currentStep && currentStep.progress >= 100 && currentStepIndex < allStepsData.length - 1) {
-      const nextStepIndex = currentStepIndex + 1;
-      setCurrentStepIndex(nextStepIndex);
-      
-      // Add the next step with a slight delay
-      setTimeout(() => {
-        setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[nextStepIndex]]);
-      }, 500);
-    }
-    
-    // When all steps are complete and the last one reaches 100%, show the qualification button
-    if (currentStepIndex === allStepsData.length - 1 && currentStep.progress >= 100) {
-      setLoading(false);
-      setShowQualificationButton(true);
-    }
-  }, [analysisSteps, currentStepIndex, allStepsData]);
-
   // Progress bar animation
   useEffect(() => {
     if (!analysisSteps.length) return;
@@ -91,6 +67,33 @@ const UserData: React.FC = () => {
     const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
   }, [analysisSteps]);
+
+  // Monitor step completion and add next step only when current one is 100% complete
+  useEffect(() => {
+    if (!analysisSteps.length || currentStepIndex >= allStepsData.length) return;
+    
+    const currentStep = analysisSteps[analysisSteps.length - 1];
+    
+    // If current step is complete and there are more steps to add
+    if (currentStep && currentStep.progress >= 100 && currentStepIndex < allStepsData.length - 1) {
+      const nextStepIndex = currentStepIndex + 1;
+      setCurrentStepIndex(nextStepIndex);
+      
+      // Add the next step with a slight delay after current one completes
+      setTimeout(() => {
+        setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[nextStepIndex]]);
+      }, 500);
+    }
+    
+    // Only show qualification button when all steps are complete
+    // and the last step has reached 100%
+    if (currentStepIndex === allStepsData.length - 1 && currentStep.progress >= 100 && !showQualificationButton) {
+      setTimeout(() => {
+        setLoading(false);
+        setShowQualificationButton(true);
+      }, 300); // Small delay to ensure progress bar is visibly complete
+    }
+  }, [analysisSteps, currentStepIndex, allStepsData, showQualificationButton]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
