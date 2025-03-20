@@ -50,14 +50,14 @@ const UserData: React.FC = () => {
       setAnalysisSteps(steps => 
         steps.map(step => {
           if (step.progress < 100) {
-            return { ...step, progress: Math.min(step.progress + 0.5, 100) };
+            return { ...step, progress: Math.min(step.progress + 1, 100) };
           }
           return step;
         })
       );
     };
 
-    const intervalId = setInterval(animateProgressBars, 80);
+    const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -116,14 +116,14 @@ const UserData: React.FC = () => {
         const newStep = analysisStepsList[currentStep];
         setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
         currentStep++;
-        setTimeout(processStep, 3500 + Math.random() * 500);
+        setTimeout(processStep, 2500 + Math.random() * 500);
       } else {
         setLoading(false);
         setShowQualificationButton(true);
       }
     };
     
-    setTimeout(processStep, 1000);
+    setTimeout(processStep, 800);
   };
 
   const handleQualified = () => {
