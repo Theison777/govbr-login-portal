@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -13,8 +12,7 @@ const UserData: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
-  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number, completed: boolean}[]>([]);
-  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
@@ -48,76 +46,20 @@ const UserData: React.FC = () => {
   };
 
   useEffect(() => {
-    if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
-      return;
-    }
-
-    const animateCurrentStep = () => {
-      setAnalysisSteps(prevSteps => {
-        const newSteps = [...prevSteps];
-        if (newSteps[currentStepIndex] && newSteps[currentStepIndex].progress < 100) {
-          newSteps[currentStepIndex] = {
-            ...newSteps[currentStepIndex], 
-            progress: Math.min(newSteps[currentStepIndex].progress + 3, 100)
-          };
-          
-          if (newSteps[currentStepIndex].progress === 100) {
-            newSteps[currentStepIndex].completed = true;
+    const animateProgressBars = () => {
+      setAnalysisSteps(steps => 
+        steps.map(step => {
+          if (step.progress < 100) {
+            return { ...step, progress: Math.min(step.progress + 0.5, 100) };
           }
-        }
-        return newSteps;
-      });
+          return step;
+        })
+      );
     };
 
-    const intervalId = setInterval(animateCurrentStep, 25);
-
+    const intervalId = setInterval(animateProgressBars, 80);
     return () => clearInterval(intervalId);
-  }, [analysisSteps, currentStepIndex]);
-
-  useEffect(() => {
-    if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
-      return;
-    }
-
-    const currentStep = analysisSteps[currentStepIndex];
-    
-    if (currentStep && currentStep.progress === 100) {
-      if (currentStepIndex === 0) {
-        setTimeout(() => {
-          setAnalysisSteps(prevSteps => [
-            ...prevSteps,
-            {
-              title: "Dados Informados Corretamente",
-              detail: "Ter os dados corretamente informados pelo empregador",
-              progress: 0,
-              completed: false
-            }
-          ]);
-          setCurrentStepIndex(1);
-        }, 500);
-      } else if (currentStepIndex === 1) {
-        setTimeout(() => {
-          setAnalysisSteps(prevSteps => [
-            ...prevSteps,
-            {
-              title: "Empregadores Contribuintes",
-              detail: "Empregadores contribuem para o PIS ou Pasep",
-              progress: 0,
-              completed: false
-            }
-          ]);
-          setCurrentStepIndex(2);
-        }, 500);
-      } else if (currentStepIndex === 2) {
-        if (!showQualificationButton) {
-          setTimeout(() => {
-            setShowQualificationButton(true);
-            setLoading(false);
-          }, 500);
-        }
-      }
-    }
-  }, [analysisSteps, currentStepIndex, showQualificationButton]);
+  }, []);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -146,21 +88,42 @@ const UserData: React.FC = () => {
   const handleConfirmData = () => {
     setShowVerification(true);
     
+    const analysisStepsList = [
+      {
+        title: "Exercer atividade remunerada",
+        detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
+        progress: 0
+      },
+      {
+        title: "Dados Informados Corretamente",
+        detail: "Ter os dados corretamente informados pelo empregador",
+        progress: 0
+      },
+      {
+        title: "Empregadores Contribuintes",
+        detail: "Empregadores contribuem para o PIS ou Pasep",
+        progress: 0
+      }
+    ];
+    
     setLoading(true);
     setAnalysisSteps([]);
-    setCurrentStepIndex(0);
     setShowQualificationButton(false);
     
-    setTimeout(() => {
-      setAnalysisSteps([
-        {
-          title: "Exercer atividade remunerada",
-          detail: "Ter exercido atividade remunerada por pelo menos 30 dias",
-          progress: 0,
-          completed: false
-        }
-      ]);
-    }, 800);
+    let currentStep = 0;
+    const processStep = () => {
+      if (currentStep < analysisStepsList.length) {
+        const newStep = analysisStepsList[currentStep];
+        setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
+        currentStep++;
+        setTimeout(processStep, 3500 + Math.random() * 500);
+      } else {
+        setLoading(false);
+        setShowQualificationButton(true);
+      }
+    };
+    
+    setTimeout(processStep, 1000);
   };
 
   const handleQualified = () => {
@@ -270,23 +233,15 @@ const UserData: React.FC = () => {
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className={`flex flex-col ${step.completed ? 'bg-green-50' : 'bg-white'} border ${step.completed ? 'border-green-100' : 'border-gray-100'} rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in`}
+                      className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
                     >
                       <div className="flex items-start mb-2">
-                        <div className={`${step.completed ? 'bg-green-100' : 'bg-gray-50'} p-1.5 rounded-md mr-3 mt-1`}>
-                          {step.completed ? (
-                            <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
-                          ) : (
-                            getStepIcon(step.title)
-                          )}
+                        <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
+                          {getStepIcon(step.title)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className={`font-medium text-sm ${step.completed ? 'text-green-700' : 'text-gray-800'}`}>
-                            {step.title}
-                          </div>
-                          <div className={`text-sm ${step.completed ? 'text-green-600' : 'text-gray-500'} break-words`}>
-                            {step.detail}
-                          </div>
+                          <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                          <div className="text-sm text-gray-500 break-words">{step.detail}</div>
                         </div>
                       </div>
                       
@@ -294,7 +249,9 @@ const UserData: React.FC = () => {
                         <Progress 
                           className="h-1.5 w-full bg-gray-100" 
                           value={step.progress}
-                          isComplete={step.completed}
+                          style={{
+                            '--progress-background': '#0066CC',
+                          } as React.CSSProperties}
                         />
                       </div>
                     </div>
@@ -302,12 +259,12 @@ const UserData: React.FC = () => {
                 </div>
               </ScrollArea>
               
-              {loading && !showQualificationButton ? (
+              {loading ? (
                 <div className="flex justify-center mt-4">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
                 </div>
               ) : showQualificationButton && (
-                <div className="flex justify-center mt-6 animate-fade-in">
+                <div className="flex justify-center mt-6">
                   <Button 
                     className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
                     onClick={handleQualified}
