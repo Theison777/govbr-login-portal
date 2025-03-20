@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -36,11 +35,9 @@ const UserData: React.FC = () => {
     }
   }, [analysisSteps, autoScroll]);
 
-  // Enable touch and mouse interaction while maintaining auto-scroll for new steps
   const handleScrollAreaInteraction = () => {
     setAutoScroll(false);
     
-    // Re-enable auto-scroll after 3 seconds of inactivity
     const timer = setTimeout(() => {
       setAutoScroll(true);
     }, 3000);
@@ -53,14 +50,14 @@ const UserData: React.FC = () => {
       setAnalysisSteps(steps => 
         steps.map(step => {
           if (step.progress < 100) {
-            return { ...step, progress: Math.min(step.progress + 2, 100) };
+            return { ...step, progress: Math.min(step.progress + 0.5, 100) };
           }
           return step;
         })
       );
     };
 
-    const intervalId = setInterval(animateProgressBars, 30);
+    const intervalId = setInterval(animateProgressBars, 80);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -119,14 +116,14 @@ const UserData: React.FC = () => {
         const newStep = analysisStepsList[currentStep];
         setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
         currentStep++;
-        setTimeout(processStep, 1500 + Math.random() * 500);
+        setTimeout(processStep, 3500 + Math.random() * 500);
       } else {
         setLoading(false);
         setShowQualificationButton(true);
       }
     };
     
-    setTimeout(processStep, 100);
+    setTimeout(processStep, 1000);
   };
 
   const handleQualified = () => {
