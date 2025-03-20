@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,8 @@ const UserData: React.FC = () => {
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
+  const [allStepsData, setAllStepsData] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -45,11 +48,39 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
+  // Monitor progress of current step and add next step when current one completes
   useEffect(() => {
+    if (!analysisSteps.length || currentStepIndex >= allStepsData.length) return;
+    
+    const currentStep = analysisSteps[analysisSteps.length - 1];
+    
+    // If current step is complete and there are more steps to add
+    if (currentStep && currentStep.progress >= 100 && currentStepIndex < allStepsData.length - 1) {
+      const nextStepIndex = currentStepIndex + 1;
+      setCurrentStepIndex(nextStepIndex);
+      
+      // Add the next step with a slight delay
+      setTimeout(() => {
+        setAnalysisSteps(prevSteps => [...prevSteps, allStepsData[nextStepIndex]]);
+      }, 500);
+    }
+    
+    // When all steps are complete and the last one reaches 100%, show the qualification button
+    if (currentStepIndex === allStepsData.length - 1 && currentStep.progress >= 100) {
+      setLoading(false);
+      setShowQualificationButton(true);
+    }
+  }, [analysisSteps, currentStepIndex, allStepsData]);
+
+  // Progress bar animation
+  useEffect(() => {
+    if (!analysisSteps.length) return;
+    
     const animateProgressBars = () => {
       setAnalysisSteps(steps => 
-        steps.map(step => {
-          if (step.progress < 100) {
+        steps.map((step, index) => {
+          // Only animate the current/last step
+          if (index === steps.length - 1 && step.progress < 100) {
             return { ...step, progress: Math.min(step.progress + 1, 100) };
           }
           return step;
@@ -59,7 +90,7 @@ const UserData: React.FC = () => {
 
     const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [analysisSteps]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -109,21 +140,13 @@ const UserData: React.FC = () => {
     setLoading(true);
     setAnalysisSteps([]);
     setShowQualificationButton(false);
+    setAllStepsData(analysisStepsList);
+    setCurrentStepIndex(0);
     
-    let currentStep = 0;
-    const processStep = () => {
-      if (currentStep < analysisStepsList.length) {
-        const newStep = analysisStepsList[currentStep];
-        setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
-        currentStep++;
-        setTimeout(processStep, 2500 + Math.random() * 500);
-      } else {
-        setLoading(false);
-        setShowQualificationButton(true);
-      }
-    };
-    
-    setTimeout(processStep, 800);
+    // Add first step with slight delay
+    setTimeout(() => {
+      setAnalysisSteps([analysisStepsList[0]]);
+    }, 800);
   };
 
   const handleQualified = () => {
@@ -259,11 +282,13 @@ const UserData: React.FC = () => {
                 </div>
               </ScrollArea>
               
-              {loading ? (
+              {loading && !showQualificationButton && (
                 <div className="flex justify-center mt-4">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
                 </div>
-              ) : showQualificationButton && (
+              )}
+              
+              {showQualificationButton && (
                 <div className="flex justify-center mt-6">
                   <Button 
                     className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
