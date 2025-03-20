@@ -20,13 +20,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Ensure the output directory is correct
+  // Ensure the output directory is correct for Lovable deployment
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // Make sure assets are handled correctly
     assetsDir: 'assets',
+    // Ensure the build is optimized for production
+    minify: true,
+    sourcemap: false,
   },
-  // Add base config to handle subdirectory deployments if needed
+  // Make sure base path is set to root
   base: '/',
 }));
