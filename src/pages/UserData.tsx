@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -203,7 +202,7 @@ const UserData: React.FC = () => {
                   onClick={handleConfirmData}
                 >
                   <CheckCircle className="mr-2 h-4 w-4 flex-shrink-0" />
-                  <span>Confirmar meus dados</span>
+                  <span>Consultar Abono Salarial</span>
                 </Button>
               </div>
             </>
