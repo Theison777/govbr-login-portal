@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -269,10 +270,10 @@ const UserData: React.FC = () => {
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in"
+                      className={`flex flex-col ${step.completed ? 'bg-green-50' : 'bg-white'} border ${step.completed ? 'border-green-100' : 'border-gray-100'} rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in`}
                     >
                       <div className="flex items-start mb-2">
-                        <div className={`${step.completed ? 'bg-green-50' : 'bg-gray-50'} p-1.5 rounded-md mr-3 mt-1`}>
+                        <div className={`${step.completed ? 'bg-green-100' : 'bg-gray-50'} p-1.5 rounded-md mr-3 mt-1`}>
                           {step.completed ? (
                             <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
                           ) : (
@@ -283,7 +284,9 @@ const UserData: React.FC = () => {
                           <div className={`font-medium text-sm ${step.completed ? 'text-green-700' : 'text-gray-800'}`}>
                             {step.title}
                           </div>
-                          <div className="text-sm text-gray-500 break-words">{step.detail}</div>
+                          <div className={`text-sm ${step.completed ? 'text-green-600' : 'text-gray-500'} break-words`}>
+                            {step.detail}
+                          </div>
                         </div>
                       </div>
                       
