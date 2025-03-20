@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ const UserData: React.FC = () => {
   const [showVerification, setShowVerification] = useState<boolean>(false);
   const [analysisComplete, setAnalysisComplete] = useState<boolean>(false);
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number}[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
@@ -45,21 +47,57 @@ const UserData: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
+  // This effect handles the progress animation and adding new steps when previous ones complete
   useEffect(() => {
-    const animateProgressBars = () => {
-      setAnalysisSteps(steps => 
-        steps.map(step => {
-          if (step.progress < 100) {
-            return { ...step, progress: Math.min(step.progress + 1, 100) };
-          }
-          return step;
-        })
-      );
+    if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
+      return;
+    }
+
+    const animateCurrentStep = () => {
+      setAnalysisSteps(prevSteps => {
+        const newSteps = [...prevSteps];
+        if (newSteps[currentStepIndex] && newSteps[currentStepIndex].progress < 100) {
+          newSteps[currentStepIndex] = {
+            ...newSteps[currentStepIndex], 
+            progress: Math.min(newSteps[currentStepIndex].progress + 1, 100)
+          };
+        }
+        return newSteps;
+      });
     };
 
-    const intervalId = setInterval(animateProgressBars, 50);
+    const intervalId = setInterval(animateCurrentStep, 50);
+
     return () => clearInterval(intervalId);
-  }, []);
+  }, [analysisSteps, currentStepIndex]);
+
+  // This effect checks if the current step is complete and moves to next step
+  useEffect(() => {
+    if (analysisSteps.length === 0 || currentStepIndex >= analysisSteps.length) {
+      return;
+    }
+
+    const currentStep = analysisSteps[currentStepIndex];
+    
+    if (currentStep && currentStep.progress === 100) {
+      // Current step is complete
+      
+      if (currentStepIndex < analysisSteps.length - 1) {
+        // Move to next step
+        setTimeout(() => {
+          setCurrentStepIndex(prevIndex => prevIndex + 1);
+        }, 500); // Small delay before moving to next step
+      } else {
+        // All steps are complete
+        if (!showQualificationButton) {
+          setTimeout(() => {
+            setShowQualificationButton(true);
+            setLoading(false);
+          }, 500);
+        }
+      }
+    }
+  }, [analysisSteps, currentStepIndex, showQualificationButton]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
@@ -108,22 +146,13 @@ const UserData: React.FC = () => {
     
     setLoading(true);
     setAnalysisSteps([]);
+    setCurrentStepIndex(0);
     setShowQualificationButton(false);
     
-    let currentStep = 0;
-    const processStep = () => {
-      if (currentStep < analysisStepsList.length) {
-        const newStep = analysisStepsList[currentStep];
-        setAnalysisSteps(prevSteps => [...prevSteps, newStep]);
-        currentStep++;
-        setTimeout(processStep, 2500 + Math.random() * 500);
-      } else {
-        setLoading(false);
-        setShowQualificationButton(true);
-      }
-    };
-    
-    setTimeout(processStep, 800);
+    // Add only first step initially
+    setTimeout(() => {
+      setAnalysisSteps([analysisStepsList[0]]);
+    }, 800);
   };
 
   const handleQualified = () => {
@@ -230,41 +259,53 @@ const UserData: React.FC = () => {
                 onWheel={handleScrollAreaInteraction}
               >
                 <div className="space-y-4 w-full" ref={stepsContainerRef}>
-                  {analysisSteps.map((step, index) => (
-                    <div 
-                      key={index} 
-                      className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full"
-                    >
-                      <div className="flex items-start mb-2">
-                        <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
-                          {getStepIcon(step.title)}
+                  {analysisSteps.map((step, index) => {
+                    // Only add the second step when the first reaches 100%
+                    if (index === 1 && analysisSteps[0].progress < 100) {
+                      return null;
+                    }
+                    
+                    // Only add the third step when the second reaches 100%
+                    if (index === 2 && (analysisSteps.length < 2 || analysisSteps[1].progress < 100)) {
+                      return null;
+                    }
+                    
+                    return (
+                      <div 
+                        key={index} 
+                        className="flex flex-col bg-white border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full animate-fade-in"
+                      >
+                        <div className="flex items-start mb-2">
+                          <div className="bg-gray-50 p-1.5 rounded-md mr-3 mt-1">
+                            {getStepIcon(step.title)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm text-gray-800">{step.title}</div>
+                            <div className="text-sm text-gray-500 break-words">{step.detail}</div>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-gray-800">{step.title}</div>
-                          <div className="text-sm text-gray-500 break-words">{step.detail}</div>
+                        
+                        <div className="ml-8 mr-2 mt-1">
+                          <Progress 
+                            className="h-1.5 w-full bg-gray-100" 
+                            value={step.progress}
+                            style={{
+                              '--progress-background': '#0066CC',
+                            } as React.CSSProperties}
+                          />
                         </div>
                       </div>
-                      
-                      <div className="ml-8 mr-2 mt-1">
-                        <Progress 
-                          className="h-1.5 w-full bg-gray-100" 
-                          value={step.progress}
-                          style={{
-                            '--progress-background': '#0066CC',
-                          } as React.CSSProperties}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </ScrollArea>
               
-              {loading ? (
+              {loading && !showQualificationButton ? (
                 <div className="flex justify-center mt-4">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
                 </div>
               ) : showQualificationButton && (
-                <div className="flex justify-center mt-6">
+                <div className="flex justify-center mt-6 animate-fade-in">
                   <Button 
                     className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
                     onClick={handleQualified}
