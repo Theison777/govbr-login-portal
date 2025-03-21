@@ -358,26 +358,26 @@ const UserData: React.FC = () => {
             </div>
             
             <Card className="mb-3">
-              <CardHeader className="pb-1 pt-2">
+              <CardHeader className="pb-1 pt-3">
                 <CardTitle className="text-base font-medium flex items-center">
                   <User className="h-5 w-5 text-govblue-600 mr-2" />
                   Informações do Trabalhador
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-2">
-                <div className="grid grid-cols-2 gap-1 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">Nome Completo</span>
-                    <span className="font-medium">{userData.nome}</span>
+                    <span className="text-sm font-medium">{userData.nome}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">CPF</span>
-                    <span className="font-medium">{userData.cpf}</span>
+                    <span className="text-sm font-medium">{userData.cpf}</span>
                   </div>
                   {userData.data_nascimento && (
                     <div className="flex flex-col">
                       <span className="text-xs text-gray-500">Data de Nascimento</span>
-                      <span className="font-medium">{formatDate(userData.data_nascimento)}</span>
+                      <span className="text-sm font-medium">{formatDate(userData.data_nascimento)}</span>
                     </div>
                   )}
                 </div>
@@ -438,3 +438,4 @@ const UserData: React.FC = () => {
 };
 
 export default UserData;
+
