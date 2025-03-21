@@ -341,12 +341,12 @@ const UserData: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="glass-card rounded-xl p-6 animate-fade-in mt-2">
-            <h2 className="font-heading text-xl font-semibold text-govblue-700 mb-4">
+          <div className="glass-card rounded-xl p-4 animate-fade-in">
+            <h2 className="font-heading text-xl font-semibold text-govblue-700 mb-2">
               Detalhes do Abono Salarial
             </h2>
             
-            <div className="flex flex-col sm:flex-row justify-between mb-4 bg-govblue-50 p-4 rounded-lg">
+            <div className="flex flex-col sm:flex-row justify-between mb-3 bg-govblue-50 p-3 rounded-lg">
               <div className="flex items-center mb-2 sm:mb-0">
                 <CalendarIcon className="h-5 w-5 text-govblue-600 mr-2" />
                 <span className="text-sm font-medium">Ano Base: 2023</span>
@@ -357,27 +357,27 @@ const UserData: React.FC = () => {
               </div>
             </div>
             
-            <Card className="mb-4">
-              <CardHeader className="pb-1 pt-3">
+            <Card className="mb-3">
+              <CardHeader className="pb-1 pt-2">
                 <CardTitle className="text-base font-medium flex items-center">
                   <User className="h-5 w-5 text-govblue-600 mr-2" />
                   Informações do Trabalhador
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-2">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1 text-sm">
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">Nome Completo</span>
-                    <span className="text-sm font-medium">{userData.nome}</span>
+                    <span className="font-medium">{userData.nome}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">CPF</span>
-                    <span className="text-sm font-medium">{userData.cpf}</span>
+                    <span className="font-medium">{userData.cpf}</span>
                   </div>
                   {userData.data_nascimento && (
                     <div className="flex flex-col">
                       <span className="text-xs text-gray-500">Data de Nascimento</span>
-                      <span className="text-sm font-medium">{formatDate(userData.data_nascimento)}</span>
+                      <span className="font-medium">{formatDate(userData.data_nascimento)}</span>
                     </div>
                   )}
                 </div>
@@ -385,17 +385,22 @@ const UserData: React.FC = () => {
             </Card>
             
             <Card>
-              <CardHeader className="pb-1 pt-3">
+              <CardHeader className="pb-1 pt-2">
                 <CardTitle className="text-base font-medium flex items-center">
                   <CreditCard className="h-5 w-5 text-govblue-600 mr-2" />
                   Informações de Pagamento
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-2">
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <div className="flex flex-col">
                     <span className="text-xs text-gray-500">Valor do Pagamento</span>
                     <span className="text-sm font-medium text-green-700">R$ 1.612,00</span>
+                  </div>
+                  <Separator className="my-1" />
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500">Valor proporcional do pagamento</span>
+                    <span className="text-sm font-medium text-green-700">2 Salários mínimos</span>
                   </div>
                   <Separator className="my-1" />
                   <div className="flex flex-col">
@@ -416,7 +421,7 @@ const UserData: React.FC = () => {
               </CardContent>
             </Card>
             
-            <div className="mt-6 flex justify-center">
+            <div className="mt-4 flex justify-center">
               <Button 
                 className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
                 onClick={() => toast.success("Processando sua solicitação de recebimento.")}
