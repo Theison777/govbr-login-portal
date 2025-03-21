@@ -489,7 +489,7 @@ const UserData: React.FC = () => {
                         <Button 
                           onClick={handleShowImpediments}
                           variant="outline"
-                          className="w-full text-amber-600 border-amber-200 hover:bg-amber-50"
+                          className="w-full text-red-600 border-red-200 hover:bg-red-50"
                         >
                           <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
                           Ver Impedimentos
