@@ -221,7 +221,7 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">
                 {areAllStepsComplete 
-                  ? "Análise Concluída! Você tem direito ao PIS/Pasep." 
+                  ? "Análise Concluída! Você tem direito ao Abono Salarial." 
                   : "Análise em andamento..."}
               </h3>
               
