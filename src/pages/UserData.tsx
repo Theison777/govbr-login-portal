@@ -1,11 +1,9 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award, Briefcase, ClipboardCheck, Building } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 
 const UserData: React.FC = () => {
@@ -17,7 +15,6 @@ const UserData: React.FC = () => {
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -29,38 +26,21 @@ const UserData: React.FC = () => {
       navigate('/');
     }
   }, [location.state, navigate]);
-  
-  useEffect(() => {
-    // Only scroll to the beginning of the steps container when all steps are loaded
-    if (stepsContainerRef.current && analysisSteps.length === 3 && autoScroll) {
-      stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [analysisSteps, autoScroll]);
 
-  const handleScrollAreaInteraction = () => {
-    setAutoScroll(false);
-    
-    const timer = setTimeout(() => {
-      setAutoScroll(true);
-    }, 3000);
-    
-    return () => clearTimeout(timer);
+  const animateProgressBars = () => {
+    setAnalysisSteps(steps => 
+      steps.map(step => {
+        if (step.progress < 100) {
+          return { ...step, progress: Math.min(step.progress + 1, 100) };
+        } else if (step.progress === 100 && !step.completed) {
+          return { ...step, completed: true };
+        }
+        return step;
+      })
+    );
   };
 
   useEffect(() => {
-    const animateProgressBars = () => {
-      setAnalysisSteps(steps => 
-        steps.map(step => {
-          if (step.progress < 100) {
-            return { ...step, progress: Math.min(step.progress + 1, 100) };
-          } else if (step.progress === 100 && !step.completed) {
-            return { ...step, completed: true };
-          }
-          return step;
-        })
-      );
-    };
-
     const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
   }, []);
@@ -233,14 +213,8 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <ScrollArea 
-                className="h-[40vh] w-full p-0 mb-6"
-                ref={scrollAreaRef}
-                onTouchStart={handleScrollAreaInteraction}
-                onMouseDown={handleScrollAreaInteraction}
-                onWheel={handleScrollAreaInteraction}
-              >
-                <div className="space-y-4 w-full" ref={stepsContainerRef}>
+              <div className="w-full max-h-[40vh] overflow-y-auto mb-6" ref={stepsContainerRef}>
+                <div className="space-y-4 w-full">
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
@@ -268,7 +242,7 @@ const UserData: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </ScrollArea>
+              </div>
               
               {loading ? (
                 <div className="flex justify-center mt-4">
