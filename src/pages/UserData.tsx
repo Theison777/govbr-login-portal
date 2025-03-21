@@ -24,6 +24,7 @@ const UserData: React.FC = () => {
   const [isImpedimentsOpen, setIsImpedimentsOpen] = useState<boolean>(false);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const paymentInfoRef = useRef<HTMLDivElement>(null);
+  const impedimentsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -167,6 +168,18 @@ const UserData: React.FC = () => {
     setTimeout(() => {
       paymentInfoRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 400);
+  };
+
+  const handleShowImpediments = () => {
+    setIsPaymentInfoOpen(false);
+    
+    setTimeout(() => {
+      setIsImpedimentsOpen(true);
+      
+      setTimeout(() => {
+        impedimentsRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }, 300);
   };
 
   if (!userData) {
@@ -471,72 +484,85 @@ const UserData: React.FC = () => {
                           <span className="text-sm font-medium">Caixa Econômica</span>
                         </div>
                       </div>
+                      
+                      <div className="mt-4 flex justify-center">
+                        <Button 
+                          onClick={handleShowImpediments}
+                          variant="outline"
+                          className="w-full text-amber-600 border-amber-200 hover:bg-amber-50"
+                        >
+                          <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
+                          Ver Impedimentos
+                        </Button>
+                      </div>
                     </CardContent>
                   </CollapsibleContent>
                 </Card>
               </Collapsible>
             </div>
             
-            <Collapsible 
-              open={isImpedimentsOpen} 
-              onOpenChange={setIsImpedimentsOpen}
-              className="mb-3"
-            >
-              <Card>
-                <CardHeader className="pb-1 pt-2">
-                  <CollapsibleTrigger className="w-full flex items-center justify-between">
-                    <CardTitle className="text-base font-medium flex items-center">
-                      <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
-                      Impedimentos
-                    </CardTitle>
-                    {isImpedimentsOpen ? 
-                      <ChevronUp className="h-4 w-4 text-gray-500" /> : 
-                      <ChevronDown className="h-4 w-4 text-gray-500" />
-                    }
-                  </CollapsibleTrigger>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent className="py-2">
-                    <div className="space-y-3">
-                      <div className="flex items-start">
-                        <Ban className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
-                        <div>
-                          <span className="text-sm font-medium">Trabalho com Carteira não assinada</span>
-                          <p className="text-xs text-gray-500">Trabalho informal não é considerado para o cálculo do abono salarial.</p>
+            <div ref={impedimentsRef}>
+              <Collapsible 
+                open={isImpedimentsOpen} 
+                onOpenChange={setIsImpedimentsOpen}
+                className="mb-3"
+              >
+                <Card>
+                  <CardHeader className="pb-1 pt-2">
+                    <CollapsibleTrigger className="w-full flex items-center justify-between">
+                      <CardTitle className="text-base font-medium flex items-center">
+                        <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
+                        Impedimentos
+                      </CardTitle>
+                      {isImpedimentsOpen ? 
+                        <ChevronUp className="h-4 w-4 text-gray-500" /> : 
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      }
+                    </CollapsibleTrigger>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="py-2">
+                      <div className="space-y-3">
+                        <div className="flex items-start">
+                          <Ban className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
+                          <div>
+                            <span className="text-sm font-medium">Trabalho com Carteira não assinada</span>
+                            <p className="text-xs text-gray-500">Trabalho informal não é considerado para o cálculo do abono salarial.</p>
+                          </div>
+                        </div>
+                        <Separator className="my-1" />
+                        
+                        <div className="flex items-start">
+                          <X className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
+                          <div>
+                            <span className="text-sm font-medium">Tempo de trabalho inferior a 30 dias</span>
+                            <p className="text-xs text-gray-500">É necessário ter trabalhado pelo menos 30 dias com carteira assinada.</p>
+                          </div>
+                        </div>
+                        <Separator className="my-1" />
+                        
+                        <div className="flex items-start">
+                          <ShieldAlert className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
+                          <div>
+                            <span className="text-sm font-medium">Informações incorretas do empregador</span>
+                            <p className="text-xs text-gray-500">Dados incorretos fornecidos pelo empregador podem prejudicar seu direito.</p>
+                          </div>
+                        </div>
+                        <Separator className="my-1" />
+                        
+                        <div className="flex items-start">
+                          <Info className="h-4 w-4 text-amber-600 mt-1 mr-2 flex-shrink-0" />
+                          <div>
+                            <span className="text-sm font-medium">Divergência de dados cadastrais</span>
+                            <p className="text-xs text-gray-500">Mantenha seus dados sempre atualizados junto ao seu empregador e à Caixa.</p>
+                          </div>
                         </div>
                       </div>
-                      <Separator className="my-1" />
-                      
-                      <div className="flex items-start">
-                        <X className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
-                        <div>
-                          <span className="text-sm font-medium">Tempo de trabalho inferior a 30 dias</span>
-                          <p className="text-xs text-gray-500">É necessário ter trabalhado pelo menos 30 dias com carteira assinada.</p>
-                        </div>
-                      </div>
-                      <Separator className="my-1" />
-                      
-                      <div className="flex items-start">
-                        <ShieldAlert className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
-                        <div>
-                          <span className="text-sm font-medium">Informações incorretas do empregador</span>
-                          <p className="text-xs text-gray-500">Dados incorretos fornecidos pelo empregador podem prejudicar seu direito.</p>
-                        </div>
-                      </div>
-                      <Separator className="my-1" />
-                      
-                      <div className="flex items-start">
-                        <Info className="h-4 w-4 text-amber-600 mt-1 mr-2 flex-shrink-0" />
-                        <div>
-                          <span className="text-sm font-medium">Divergência de dados cadastrais</span>
-                          <p className="text-xs text-gray-500">Mantenha seus dados sempre atualizados junto ao seu empregador e à Caixa.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            </div>
             
             <div className="mt-4 flex justify-center">
               <Button 
