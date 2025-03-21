@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -219,7 +220,7 @@ const UserData: React.FC = () => {
                   {analysisSteps.map((step, index) => (
                     <div 
                       key={index} 
-                      className={`flex flex-col ${step.completed ? 'bg-green-50' : 'bg-white'} border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full transition-colors duration-300`}
+                      className={`flex flex-col ${step.completed ? 'bg-green-50' : step.progress === 100 ? 'bg-[#F2FCE2]' : 'bg-white'} border border-gray-100 rounded-md py-3 px-4 shadow-sm mb-2 overflow-visible w-full transition-colors duration-300`}
                     >
                       <div className="flex items-start mb-2">
                         <div className={`${step.completed ? 'bg-green-50' : 'bg-gray-50'} p-1.5 rounded-md mr-3 mt-1`}>
