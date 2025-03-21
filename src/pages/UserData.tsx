@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award, Briefcase, ClipboardCheck, Building } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
+import { ScrollAreaNoScrollbar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 
 const UserData: React.FC = () => {
@@ -213,7 +214,10 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <div className="w-full max-h-[40vh] overflow-y-auto mb-6" ref={stepsContainerRef}>
+              <ScrollAreaNoScrollbar 
+                className="h-[40vh] w-full p-0 mb-6"
+                ref={stepsContainerRef}
+              >
                 <div className="space-y-4 w-full">
                   {analysisSteps.map((step, index) => (
                     <div 
@@ -242,7 +246,7 @@ const UserData: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </ScrollAreaNoScrollbar>
               
               {loading ? (
                 <div className="flex justify-center mt-4">
