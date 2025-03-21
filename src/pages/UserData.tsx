@@ -157,12 +157,22 @@ const UserData: React.FC = () => {
   };
 
   const handleConfirmUserData = () => {
-    setIsUserInfoOpen(false);
+    // Create a smoother transition effect
+    // First open payment info
     setIsPaymentInfoOpen(true);
-    // Add a small delay to ensure the element is visible before scrolling
+    
+    // Wait a moment before closing user info for a smoother transition
     setTimeout(() => {
-      paymentInfoRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+      setIsUserInfoOpen(false);
+      
+      // Add a small delay to ensure the element is visible before scrolling
+      setTimeout(() => {
+        paymentInfoRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 300);
+    }, 500);
   };
 
   if (!userData) {
