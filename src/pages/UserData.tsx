@@ -157,6 +157,7 @@ const UserData: React.FC = () => {
   };
 
   const handleConfirmUserData = () => {
+    setIsUserInfoOpen(false);
     setIsPaymentInfoOpen(true);
     // Add a small delay to ensure the element is visible before scrolling
     setTimeout(() => {
