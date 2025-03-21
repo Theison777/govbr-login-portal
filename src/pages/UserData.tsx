@@ -214,10 +214,7 @@ const UserData: React.FC = () => {
             <div className="py-2 w-full">
               <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
               
-              <ScrollAreaNoScrollbar 
-                className="h-[40vh] w-full p-0 mb-6"
-                ref={stepsContainerRef}
-              >
+              <div className="w-full mb-6">
                 <div className="space-y-4 w-full">
                   {analysisSteps.map((step, index) => (
                     <div 
@@ -246,7 +243,7 @@ const UserData: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </ScrollAreaNoScrollbar>
+              </div>
               
               {loading ? (
                 <div className="flex justify-center mt-4">
