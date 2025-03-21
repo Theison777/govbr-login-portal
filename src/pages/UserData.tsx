@@ -22,6 +22,7 @@ const UserData: React.FC = () => {
   const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(true);
   const [isPaymentInfoOpen, setIsPaymentInfoOpen] = useState<boolean>(false);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
+  const paymentInfoRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -157,6 +158,10 @@ const UserData: React.FC = () => {
 
   const handleConfirmUserData = () => {
     setIsPaymentInfoOpen(true);
+    // Add a small delay to ensure the element is visible before scrolling
+    setTimeout(() => {
+      paymentInfoRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   if (!userData) {
@@ -414,56 +419,58 @@ const UserData: React.FC = () => {
               </Card>
             </Collapsible>
             
-            <Collapsible 
-              open={isPaymentInfoOpen} 
-              onOpenChange={setIsPaymentInfoOpen}
-              className="mb-3"
-            >
-              <Card>
-                <CardHeader className="pb-1 pt-2">
-                  <CollapsibleTrigger className="w-full flex items-center justify-between">
-                    <CardTitle className="text-base font-medium flex items-center">
-                      <CreditCard className="h-5 w-5 text-govblue-600 mr-2" />
-                      Informações de Pagamento
-                    </CardTitle>
-                    {isPaymentInfoOpen ? 
-                      <ChevronUp className="h-4 w-4 text-gray-500" /> : 
-                      <ChevronDown className="h-4 w-4 text-gray-500" />
-                    }
-                  </CollapsibleTrigger>
-                </CardHeader>
-                <CollapsibleContent>
-                  <CardContent className="py-2">
-                    <div className="space-y-1">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Valor do Pagamento</span>
-                        <span className="text-sm font-medium text-green-700">R$ 1.612,00</span>
+            <div ref={paymentInfoRef}>
+              <Collapsible 
+                open={isPaymentInfoOpen} 
+                onOpenChange={setIsPaymentInfoOpen}
+                className="mb-3"
+              >
+                <Card>
+                  <CardHeader className="pb-1 pt-2">
+                    <CollapsibleTrigger className="w-full flex items-center justify-between">
+                      <CardTitle className="text-base font-medium flex items-center">
+                        <CreditCard className="h-5 w-5 text-govblue-600 mr-2" />
+                        Informações de Pagamento
+                      </CardTitle>
+                      {isPaymentInfoOpen ? 
+                        <ChevronUp className="h-4 w-4 text-gray-500" /> : 
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      }
+                    </CollapsibleTrigger>
+                  </CardHeader>
+                  <CollapsibleContent>
+                    <CardContent className="py-2">
+                      <div className="space-y-1">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Valor do Pagamento</span>
+                          <span className="text-sm font-medium text-green-700">R$ 1.612,00</span>
+                        </div>
+                        <Separator className="my-1" />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Valor proporcional do pagamento</span>
+                          <span className="text-sm font-medium text-green-700">2 Salários mínimos</span>
+                        </div>
+                        <Separator className="my-1" />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Situação do Pagamento</span>
+                          <span className="text-sm font-medium text-amber-600">Aguardando Taxa</span>
+                        </div>
+                        <Separator className="my-1" />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Data do Pagamento</span>
+                          <span className="text-sm font-medium">{getCurrentDate()}</span>
+                        </div>
+                        <Separator className="my-1" />
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-500">Agente Pagador</span>
+                          <span className="text-sm font-medium">Caixa Econômica</span>
+                        </div>
                       </div>
-                      <Separator className="my-1" />
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Valor proporcional do pagamento</span>
-                        <span className="text-sm font-medium text-green-700">2 Salários mínimos</span>
-                      </div>
-                      <Separator className="my-1" />
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Situação do Pagamento</span>
-                        <span className="text-sm font-medium text-amber-600">Aguardando Taxa</span>
-                      </div>
-                      <Separator className="my-1" />
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Data do Pagamento</span>
-                        <span className="text-sm font-medium">{getCurrentDate()}</span>
-                      </div>
-                      <Separator className="my-1" />
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Agente Pagador</span>
-                        <span className="text-sm font-medium">Caixa Econômica</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
+                    </CardContent>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            </div>
             
             <div className="mt-4 flex justify-center">
               <Button 
