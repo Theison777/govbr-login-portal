@@ -31,8 +31,9 @@ const UserData: React.FC = () => {
   }, [location.state, navigate]);
   
   useEffect(() => {
-    if (stepsContainerRef.current && analysisSteps.length > 0 && autoScroll) {
-      stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    // Only scroll to the beginning of the steps container when all steps are loaded
+    if (stepsContainerRef.current && analysisSteps.length === 3 && autoScroll) {
+      stepsContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [analysisSteps, autoScroll]);
 
