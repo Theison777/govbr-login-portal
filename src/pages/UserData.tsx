@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,8 @@ const UserData: React.FC = () => {
   useEffect(() => {
     if (analysisSteps.length === 3 && analysisSteps.every(step => step.progress === 100)) {
       setAreAllStepsComplete(true);
+      // Only show qualification button when all steps are complete
+      setShowQualificationButton(true);
     }
   }, [analysisSteps]);
 
@@ -118,7 +121,8 @@ const UserData: React.FC = () => {
         setTimeout(processStep, 2500 + Math.random() * 500);
       } else {
         setLoading(false);
-        setShowQualificationButton(true);
+        // Remove this line as we'll set it in the useEffect when all steps reach 100%
+        // setShowQualificationButton(true);
       }
     };
     
@@ -260,7 +264,7 @@ const UserData: React.FC = () => {
                 <div className="flex justify-center mt-4">
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-govblue-600"></div>
                 </div>
-              ) : showQualificationButton && (
+              ) : showQualificationButton && areAllStepsComplete && (
                 <div className="flex justify-center mt-6">
                   <Button 
                     className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
