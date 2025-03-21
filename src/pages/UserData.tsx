@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { User, IdCard, Calendar, FileText, ArrowLeft, CheckCircle, AlertTriangle, Search, Clock, LoaderCircle, Award, Briefcase, ClipboardCheck, Building } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
-import { ScrollAreaNoScrollbar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 
 const UserData: React.FC = () => {
@@ -15,6 +14,7 @@ const UserData: React.FC = () => {
   const [analysisSteps, setAnalysisSteps] = useState<{title: string, detail: string, progress: number, completed: boolean}[]>([]);
   const [showQualificationButton, setShowQualificationButton] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
+  const [areAllStepsComplete, setAreAllStepsComplete] = useState<boolean>(false);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,6 +46,12 @@ const UserData: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    if (analysisSteps.length === 3 && analysisSteps.every(step => step.progress === 100)) {
+      setAreAllStepsComplete(true);
+    }
+  }, [analysisSteps]);
+
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
     const date = new Date(dateString);
@@ -76,6 +82,7 @@ const UserData: React.FC = () => {
 
   const handleConfirmData = () => {
     setShowVerification(true);
+    setAreAllStepsComplete(false);
     
     const analysisStepsList = [
       {
@@ -212,7 +219,11 @@ const UserData: React.FC = () => {
             </>
           ) : !analysisComplete ? (
             <div className="py-2 w-full">
-              <h3 className="text-govblue-700 font-medium mb-2 text-center">Análise em andamento...</h3>
+              <h3 className="text-govblue-700 font-medium mb-2 text-center">
+                {areAllStepsComplete 
+                  ? "Análise Concluída! Você tem direito ao PIS/Pasep." 
+                  : "Análise em andamento..."}
+              </h3>
               
               <div className="w-full mb-6">
                 <div className="space-y-4 w-full">
