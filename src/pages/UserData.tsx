@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -237,7 +236,7 @@ const UserData: React.FC = () => {
                           className="h-1.5 w-full bg-gray-100" 
                           value={step.progress}
                           style={{
-                            '--progress-background': step.completed ? '#22C55E' : '#0066CC',
+                            '--progress-background': step.completed ? '#22C55E' : step.progress === 100 ? '#22C55E' : '#0066CC',
                           } as React.CSSProperties}
                         />
                       </div>
