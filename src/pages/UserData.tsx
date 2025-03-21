@@ -162,7 +162,7 @@ const UserData: React.FC = () => {
           </Button>
         </div>
         
-        <div className="glass-card rounded-xl p-6 animate-fade-in mt-6">
+        <div className="glass-card rounded-xl p-6 animate-fade-in mt-2">
           {!showVerification ? (
             <>
               <h2 className="font-heading text-xl font-semibold text-gray-800 mb-6">
