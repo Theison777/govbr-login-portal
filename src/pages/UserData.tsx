@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -50,7 +49,6 @@ const UserData: React.FC = () => {
   useEffect(() => {
     if (analysisSteps.length === 3 && analysisSteps.every(step => step.progress === 100)) {
       setAreAllStepsComplete(true);
-      // Only show qualification button when all steps are complete
       setShowQualificationButton(true);
     }
   }, [analysisSteps]);
