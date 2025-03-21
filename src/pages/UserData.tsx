@@ -471,7 +471,7 @@ const UserData: React.FC = () => {
                         <Separator className="my-1" />
                         <div className="flex flex-col">
                           <span className="text-xs text-gray-500">Situação do Pagamento</span>
-                          <span className="text-sm font-medium text-amber-600">Aguardando Taxa</span>
+                          <span className="text-sm font-medium text-red-600">1 Impedimento</span>
                         </div>
                         <Separator className="my-1" />
                         <div className="flex flex-col">
@@ -581,4 +581,3 @@ const UserData: React.FC = () => {
 };
 
 export default UserData;
-
