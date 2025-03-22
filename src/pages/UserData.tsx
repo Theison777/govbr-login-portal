@@ -146,7 +146,7 @@ const UserData: React.FC = () => {
   };
 
   const handleRegularize = () => {
-    toast.info("Funcionalidade de regularização ainda não implementada.");
+    toast.info("Iniciando processo de regularização do Abono Salarial.");
   };
 
   const handleGoBack = () => {
@@ -553,11 +553,11 @@ const UserData: React.FC = () => {
             
             <div className="mt-4 flex justify-center">
               <Button 
-                className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-6 py-4 text-base w-full max-w-md"
-                onClick={() => toast.success("Processando sua solicitação de recebimento.")}
+                className="gov-button bg-red-600 hover:bg-red-700 rounded-full px-6 py-4 text-base w-full max-w-md"
+                onClick={() => toast.info("Iniciando processo de regularização do Abono Salarial.")}
               >
-                <Banknote className="mr-2 h-5 w-5 flex-shrink-0" />
-                <span className="font-medium">Receber Abono Salarial</span>
+                <AlertTriangle className="mr-2 h-5 w-5 flex-shrink-0" />
+                <span className="font-medium">Regularizar Abono Salarial</span>
               </Button>
             </div>
           </div>
