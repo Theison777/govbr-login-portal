@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const UserData: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
@@ -544,6 +546,12 @@ const UserData: React.FC = () => {
                             <span className="font-medium">Valor mínimo de R$ 425,64</span>, acrescido de R$106,40 por bimestre de atraso. E o máximo pode chegar a <span className="font-medium">R$ 42.564,00</span>.
                           </p>
                         </div>
+                        
+                        <Alert className="bg-red-100 border-red-400 border-2 p-3 rounded-md">
+                          <AlertDescription className="text-base sm:text-lg font-bold text-red-800">
+                            Informamos que o trabalhista {userData.nome} portador do CPF {userData.cpf}, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00. Para a liberação do valor do Abono Salarial será necessário pagar a multa aplicada com base no Impedimento "O Trabalhista não enviou a declaração RAIS/eSocial" no valor de R$63,21 + R$6,60 por trimestre atrasado, totalizando R$89,61. Clique no botão abaixo para regularizar seu Abono Salarial e liberar o pagamento de R$1.518,00 diretamente em sua conta após o pagamento da multa!
+                          </AlertDescription>
+                        </Alert>
                       </div>
                     </CardContent>
                   </CollapsibleContent>
