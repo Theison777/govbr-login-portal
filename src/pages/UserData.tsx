@@ -522,40 +522,27 @@ const UserData: React.FC = () => {
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="py-2">
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <div className="flex items-start">
-                          <Ban className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
+                          <Ban className="h-5 w-5 text-red-600 mt-1 mr-3 flex-shrink-0" />
                           <div>
-                            <span className="text-sm font-medium">Trabalho com Carteira não assinada</span>
-                            <p className="text-xs text-gray-500">Trabalho informal não é considerado para o cálculo do abono salarial.</p>
+                            <span className="text-sm font-medium text-red-700">O empregador não enviou a declaração RAIS/eSocial</span>
+                            <p className="text-xs text-gray-600 mt-1">
+                              O empregador tem a obrigação de informar os dados do trabalhador na Relação Anual de Informações Sociais (RAIS) ou no eSocial, e se isso não ocorrer, o trabalhador pode ter o pagamento bloqueado.
+                            </p>
                           </div>
                         </div>
-                        <Separator className="my-1" />
                         
-                        <div className="flex items-start">
-                          <X className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <span className="text-sm font-medium">Tempo de trabalho inferior a 30 dias</span>
-                            <p className="text-xs text-gray-500">É necessário ter trabalhado pelo menos 30 dias com carteira assinada.</p>
-                          </div>
-                        </div>
-                        <Separator className="my-1" />
-                        
-                        <div className="flex items-start">
-                          <ShieldAlert className="h-4 w-4 text-red-600 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <span className="text-sm font-medium">Informações incorretas do empregador</span>
-                            <p className="text-xs text-gray-500">Dados incorretos fornecidos pelo empregador podem prejudicar seu direito.</p>
-                          </div>
-                        </div>
-                        <Separator className="my-1" />
-                        
-                        <div className="flex items-start">
-                          <Info className="h-4 w-4 text-amber-600 mt-1 mr-2 flex-shrink-0" />
-                          <div>
-                            <span className="text-sm font-medium">Divergência de dados cadastrais</span>
-                            <p className="text-xs text-gray-500">Mantenha seus dados sempre atualizados junto ao seu empregador e à Caixa.</p>
-                          </div>
+                        <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-md">
+                          <p className="text-xs text-amber-800 font-medium mb-1">
+                            O pagamento do Abono Salarial só será liberado após o pagamento da multa conforme o "Artigo 25 da Lei n.º 7.998/90" que diz:
+                          </p>
+                          <p className="text-xs text-amber-800">
+                            Deixar de transmiti-la ao eSocial também deixa o trabalhador sujeito à aplicação de multa. Deixar de enviar ou entregar fora do prazo as informações da RAIS previstas no Artigo 25 da Lei n.º 7.998/90. 
+                          </p>
+                          <p className="text-xs text-amber-800 mt-2">
+                            <span className="font-medium">Valor mínimo de R$ 425,64</span>, acrescido de R$106,40 por bimestre de atraso. E o máximo pode chegar a <span className="font-medium">R$ 42.564,00</span>.
+                          </p>
                         </div>
                       </div>
                     </CardContent>
