@@ -186,6 +186,14 @@ const UserData: React.FC = () => {
     }, 300);
   };
 
+  const formatCPF = (cpf: string) => {
+    if (!cpf) return "";
+    // Remove any non-digit characters
+    const digitsOnly = cpf.replace(/\D/g, '');
+    // Apply CPF mask XXX.XXX.XXX-XX
+    return digitsOnly.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  };
+
   if (!userData) {
     return <PageLayout>
         <div className="flex justify-center items-center">
@@ -221,7 +229,7 @@ const UserData: React.FC = () => {
                     <IdCard className="h-5 w-5 text-govblue-600 mr-3" />
                     <div>
                       <div className="text-sm text-gray-500">CPF</div>
-                      <div className="font-medium">{userData.cpf}</div>
+                      <div className="font-medium">{formatCPF(userData.cpf)}</div>
                     </div>
                   </div>
                   
@@ -364,7 +372,7 @@ const UserData: React.FC = () => {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-xs text-gray-500">CPF</span>
-                        <span className="text-sm font-medium">{userData.cpf}</span>
+                        <span className="text-sm font-medium">{formatCPF(userData.cpf)}</span>
                       </div>
                       {userData.data_nascimento && <div className="flex flex-col">
                           <span className="text-xs text-gray-500">Data de Nascimento</span>
@@ -463,7 +471,7 @@ const UserData: React.FC = () => {
                         <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-md">
                           <div className="text-xs text-amber-800 font-medium space-y-3">
                             <p>
-                              Informamos que o trabalhista THEISON RAONE SCHULZ ROSS portador do CPF 17805087784, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00.
+                              Informamos que o trabalhista <span className="font-bold text-amber-600">THEISON RAONE SCHULZ ROSS</span> portador do CPF <span className="font-bold">{formatCPF("17805087784")}</span>, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00.
                             </p>
                             
                             <p>
