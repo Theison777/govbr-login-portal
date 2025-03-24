@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -509,5 +510,5 @@ const UserData: React.FC = () => {
     </PageLayout>;
 };
 
-
-
+// Add the missing default export
+export default UserData;
