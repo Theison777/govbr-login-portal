@@ -9,7 +9,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
 const UserData: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,7 +32,6 @@ const UserData: React.FC = () => {
   const impedimentsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-
   useEffect(() => {
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
@@ -42,7 +40,6 @@ const UserData: React.FC = () => {
       navigate('/');
     }
   }, [location.state, navigate]);
-
   const animateProgressBars = () => {
     setAnalysisSteps(steps => steps.map(step => {
       if (step.progress < 100) {
@@ -59,29 +56,24 @@ const UserData: React.FC = () => {
       return step;
     }));
   };
-
   useEffect(() => {
     const intervalId = setInterval(animateProgressBars, 50);
     return () => clearInterval(intervalId);
   }, []);
-
   useEffect(() => {
     if (analysisSteps.length === 3 && analysisSteps.every(step => step.progress === 100)) {
       setAreAllStepsComplete(true);
       setShowQualificationButton(true);
     }
   }, [analysisSteps]);
-
   const formatDate = (dateString: string) => {
     if (!dateString) return null;
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
   };
-
   const getCurrentDate = () => {
     return new Date().toLocaleDateString('pt-BR');
   };
-
   const getStepIcon = (step: {
     title: string;
     completed: boolean;
@@ -105,7 +97,6 @@ const UserData: React.FC = () => {
       return <LoaderCircle className="h-4 w-4 text-govblue-600 flex-shrink-0" />;
     }
   };
-
   const handleConfirmData = () => {
     setShowVerification(true);
     setAreAllStepsComplete(false);
@@ -143,25 +134,20 @@ const UserData: React.FC = () => {
     };
     setTimeout(processStep, 800);
   };
-
   const handleQualified = () => {
     setShowQualificationButton(false);
     setShowAbonoPagamento(true);
   };
-
   const handleRegularize = () => {
     toast.info("Iniciando processo de regularização do Abono Salarial.");
   };
-
   const handleGoBack = () => {
     navigate('/');
   };
-
   const handleBackToVerification = () => {
     setShowAbonoPagamento(false);
     setShowQualificationButton(true);
   };
-
   const handleConfirmUserData = () => {
     setIsPaymentInfoOpen(true);
     setTimeout(() => {
@@ -173,7 +159,6 @@ const UserData: React.FC = () => {
       });
     }, 400);
   };
-
   const handleShowImpediments = () => {
     setIsPaymentInfoOpen(false);
     setTimeout(() => {
@@ -185,7 +170,6 @@ const UserData: React.FC = () => {
       }, 100);
     }, 300);
   };
-
   const formatCPF = (cpf: string) => {
     if (!cpf) return "";
     // Remove any non-digit characters
@@ -193,7 +177,6 @@ const UserData: React.FC = () => {
     // Apply CPF mask XXX.XXX.XXX-XX
     return digitsOnly.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
-
   if (!userData) {
     return <PageLayout>
         <div className="flex justify-center items-center">
@@ -201,7 +184,6 @@ const UserData: React.FC = () => {
         </div>
       </PageLayout>;
   }
-
   return <PageLayout>
       <div className="container mx-auto p-0 pb-6 relative">
         <div className="absolute top-0 left-0 mt-2 ml-0">
@@ -412,7 +394,7 @@ const UserData: React.FC = () => {
                         <Separator className="my-1" />
                         <div className="flex flex-col">
                           <span className="text-xs text-gray-500">Valor proporcional do pagamento</span>
-                          <span className="text-sm font-medium text-green-700">2 Salários mínimos</span>
+                          <span className="text-sm font-medium text-green-700">1 Salário mínimo</span>
                         </div>
                         <Separator className="my-1" />
                         <div className="flex flex-col">
@@ -506,5 +488,4 @@ const UserData: React.FC = () => {
       </div>
     </PageLayout>;
 };
-
 export default UserData;
