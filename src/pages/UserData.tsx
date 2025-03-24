@@ -481,7 +481,7 @@ const UserData: React.FC = () => {
                             <ul className="list-disc pl-4 space-y-1">
                               <li>R$63,21 (multa base)</li>
                               <li>+ R$6,60 por trimestre atrasado</li>
-                              <li>Totalizando R$89,61</li>
+                              <li><span className="font-bold">Total da Multa R$89,61</span></li>
                             </ul>
                             
                             <p>
