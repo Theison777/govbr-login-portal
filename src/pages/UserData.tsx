@@ -389,7 +389,7 @@ const UserData: React.FC = () => {
                       <div className="space-y-1">
                         <div className="flex flex-col">
                           <span className="text-xs text-gray-500">Valor do Pagamento</span>
-                          <span className="text-sm font-medium text-green-700">R$ 1.612,00</span>
+                          <span className="text-sm font-medium text-green-700">R$ 1.518,00</span>
                         </div>
                         <Separator className="my-1" />
                         <div className="flex flex-col">
