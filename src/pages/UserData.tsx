@@ -490,17 +490,17 @@ const UserData: React.FC = () => {
                           </div>
                         </div>
                       </div>
+                      
+                      <div className="mt-4 flex justify-center">
+                        <Button className="gov-button bg-red-600 hover:bg-red-700 rounded-full px-6 py-4 text-base w-full max-w-md" onClick={() => toast.info("Iniciando processo de regularização do Abono Salarial.")}>
+                          <AlertTriangle className="mr-2 h-5 w-5 flex-shrink-0" />
+                          <span className="font-medium">Regularizar Abono Salarial</span>
+                        </Button>
+                      </div>
                     </CardContent>
                   </CollapsibleContent>
                 </Card>
               </Collapsible>
-            </div>
-            
-            <div className="mt-4 flex justify-center">
-              <Button className="gov-button bg-red-600 hover:bg-red-700 rounded-full px-6 py-4 text-base w-full max-w-md" onClick={() => toast.info("Iniciando processo de regularização do Abono Salarial.")}>
-                <AlertTriangle className="mr-2 h-5 w-5 flex-shrink-0" />
-                <span className="font-medium">Regularizar Abono Salarial</span>
-              </Button>
             </div>
           </div>}
       </div>
