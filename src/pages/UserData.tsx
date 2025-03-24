@@ -471,7 +471,7 @@ const UserData: React.FC = () => {
                         <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-md">
                           <div className="text-xs text-amber-800 font-medium space-y-3">
                             <p>
-                              Informamos que o trabalhista <span className="font-bold">THEISON RAONE SCHULZ ROSS</span> portador do CPF <span className="font-bold">{formatCPF("17805087784")}</span>, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00.
+                              Informamos que o trabalhista <span className="font-bold">{userData.nome}</span> portador do CPF <span className="font-bold">{formatCPF(userData.cpf)}</span>, tem 1 Impedimento para o recebimento do Abono Salarial no valor de R$1.518,00.
                             </p>
                             
                             <p>
