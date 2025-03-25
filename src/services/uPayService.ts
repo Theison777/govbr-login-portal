@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 // U-Pay API integration constants
 const UPAY_API_BASE_URL = 'https://api.upay.com.br/v1';
-const UPAY_API_KEY = 'YOUR_UPAY_API_KEY'; // Replace with your actual API key
+const UPAY_API_KEY = 'sk_sJno3O_OEvWQgYKaIEtE-2-NDpPDxoxG2tEL2uEZ3Ug4mYis';
 
 interface PixPaymentRequest {
   valor: number;
