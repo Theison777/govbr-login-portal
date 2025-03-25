@@ -145,7 +145,7 @@ const Payment: React.FC = () => {
                 <TableRow>
                   <TableCell className="font-medium py-1 px-2">Razão da Multa</TableCell>
                   <TableCell className="py-1 px-2">
-                    Não informação do trabalhador na RAIS/eSocial
+                    O traballhador não declarou o RAIS/eSocial
                   </TableCell>
                 </TableRow>
                 <TableRow className="bg-amber-50">
