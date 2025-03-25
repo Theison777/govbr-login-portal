@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import UserData from "./pages/UserData";
 import Payment from "./pages/Payment";
+import PixPayment from "./pages/PixPayment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/user-data" element={<UserData />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/pix-payment" element={<PixPayment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

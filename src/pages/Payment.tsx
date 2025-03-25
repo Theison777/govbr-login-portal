@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -42,12 +41,8 @@ const Payment: React.FC = () => {
   };
 
   const handleProceedToPayment = () => {
-    toast.info("Iniciando processo de pagamento da multa e liberação do Abono Salarial.");
-    // Here you would implement the actual payment processing
-    // For now, we'll just show a success message
-    setTimeout(() => {
-      toast.success("Pagamento processado com sucesso. Seu Abono Salarial será liberado em até 24 horas.");
-    }, 2000);
+    toast.info("Iniciando processo de pagamento da multa via PIX");
+    navigate('/pix-payment', { state: { userData } });
   };
 
   if (!userData) {
