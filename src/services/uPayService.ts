@@ -23,6 +23,16 @@ interface PixPaymentResponse {
   dataExpiracao: string;
 }
 
+// Function to handle API errors and return error message
+const handleApiError = async (response: Response): Promise<string> => {
+  try {
+    const errorData = await response.json();
+    return errorData.message || `Error ${response.status}: ${response.statusText}`;
+  } catch (error) {
+    return `Error ${response.status}: ${response.statusText}`;
+  }
+};
+
 // Função para gerar um pagamento PIX
 export const generatePixPayment = async (paymentData: PixPaymentRequest): Promise<PixPaymentResponse | null> => {
   try {
@@ -35,14 +45,17 @@ export const generatePixPayment = async (paymentData: PixPaymentRequest): Promis
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${UPAY_API_KEY}`,
         'Accept': 'application/json',
+        'Origin': window.location.origin,
+        'Access-Control-Allow-Origin': '*',
       },
       body: JSON.stringify(paymentData),
+      mode: 'cors',
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Erro na resposta do servidor:', response.status, errorText);
-      throw new Error(`Erro ao gerar pagamento PIX: ${response.status} - ${errorText}`);
+      const errorMessage = await handleApiError(response);
+      console.error('Erro na resposta do servidor:', response.status, errorMessage);
+      throw new Error(`Erro ao gerar pagamento PIX: ${response.status} - ${errorMessage}`);
     }
 
     const data = await response.json();
@@ -51,8 +64,14 @@ export const generatePixPayment = async (paymentData: PixPaymentRequest): Promis
   } catch (error) {
     console.error('Erro ao gerar pagamento PIX:', error);
     
+    // Log only in development environment
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Usando resposta mock como fallback');
+    }
+    
     // Fallback to mock data if the API call fails
-    console.log('Usando resposta mock como fallback');
+    toast.error('Não foi possível conectar à API de pagamento. Usando modo de demonstração temporário.');
+    
     const mockResponse: PixPaymentResponse = {
       id: 'pix_' + Math.random().toString(36).substring(2, 15),
       valor: paymentData.valor,
@@ -63,7 +82,6 @@ export const generatePixPayment = async (paymentData: PixPaymentRequest): Promis
       dataExpiracao: new Date(Date.now() + 10 * 60 * 1000).toISOString()
     };
     
-    toast.error('Não foi possível conectar à API de pagamento. Usando modo de demonstração temporário.');
     return mockResponse;
   }
 };
@@ -79,12 +97,15 @@ export const checkPixPaymentStatus = async (paymentId: string): Promise<string |
       headers: {
         'Authorization': `Bearer ${UPAY_API_KEY}`,
         'Accept': 'application/json',
+        'Origin': window.location.origin,
+        'Access-Control-Allow-Origin': '*',
       },
+      mode: 'cors',
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Erro na verificação de status:', response.status, errorText);
+      const errorMessage = await handleApiError(response);
+      console.error('Erro na verificação de status:', response.status, errorMessage);
       throw new Error(`Erro ao verificar status: ${response.status}`);
     }
 
@@ -104,3 +125,20 @@ export const checkPixPaymentStatus = async (paymentId: string): Promise<string |
   }
 };
 
+// Função para determinar se a API está disponível
+export const isApiAvailable = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(`${UPAY_API_BASE_URL}/health`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${UPAY_API_KEY}`,
+      },
+      mode: 'cors',
+    });
+    
+    return response.ok;
+  } catch (error) {
+    console.error('API indisponível:', error);
+    return false;
+  }
+};
