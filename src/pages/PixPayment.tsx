@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -8,8 +9,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { generatePixPayment, checkPixPaymentStatus, isApiAvailable } from '@/services/uPayService';
-
-const QR_CODE_IMAGE_URL = "https://i.postimg.cc/d1rxxRkk/imagem-2025-03-26-105609411.png";
 
 const PixPayment: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutos em segundos
@@ -27,6 +26,7 @@ const PixPayment: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Formatar tempo restante para MM:SS
   const formatTimeLeft = () => {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
@@ -43,6 +43,7 @@ const PixPayment: React.FC = () => {
     }
   }, [location.state, navigate]);
 
+  // Verificar conexão com a API e gerar pagamento
   const checkApiAndGeneratePayment = async (userData: any) => {
     setIsLoading(true);
     try {
@@ -62,6 +63,7 @@ const PixPayment: React.FC = () => {
     }
   };
 
+  // Gerar pagamento PIX
   const generatePayment = async (userData: any) => {
     setIsLoading(true);
     try {
@@ -81,8 +83,10 @@ const PixPayment: React.FC = () => {
         qrCodeImage: response.qrCodeBase64,
       });
       
+      // Iniciar verificação de status a cada 10 segundos
       const statusCheckInterval = startStatusCheck(response.id);
       
+      // Limpar intervalo quando componente desmontar
       return () => clearInterval(statusCheckInterval);
     } catch (error) {
       console.error('Erro ao gerar pagamento:', error);
@@ -93,12 +97,14 @@ const PixPayment: React.FC = () => {
     }
   };
 
+  // Retry payment generation
   const handleRetryPayment = () => {
     if (!userData) return;
     setApiConnectionError(false);
     checkApiAndGeneratePayment(userData);
   };
 
+  // Verificar status do pagamento
   const startStatusCheck = (paymentId: string) => {
     const interval = setInterval(async () => {
       try {
@@ -108,18 +114,21 @@ const PixPayment: React.FC = () => {
         if (status === 'PAID') {
           clearInterval(interval);
           toast.success('Pagamento confirmado! Seu abono será liberado em até 24 horas.');
+          // Poderia redirecionar para uma página de sucesso aqui
         } else if (status === 'EXPIRED' || status === 'CANCELED') {
           clearInterval(interval);
           toast.error('O pagamento expirou ou foi cancelado. Por favor, tente novamente.');
         }
       } catch (error) {
         console.error("Erro ao verificar status:", error);
+        // Não interrompe completamente o intervalo para permitir novas tentativas
       }
-    }, 10000);
+    }, 10000); // Verificar a cada 10 segundos
 
     return interval;
   };
 
+  // Timer para contagem regressiva
   useEffect(() => {
     if (timeLeft <= 0) {
       toast.error("O tempo para pagamento expirou. Por favor, gere um novo código.");
@@ -133,6 +142,7 @@ const PixPayment: React.FC = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
+  // Função para copiar o código PIX
   const handleCopyPixCode = () => {
     if (!pixData) return;
     
@@ -150,6 +160,7 @@ const PixPayment: React.FC = () => {
     navigate('/payment', { state: { userData } });
   };
 
+  // Progresso em percentagem do tempo restante (100% -> 0%)
   const timeProgress = (timeLeft / 600) * 100;
 
   return (
@@ -171,6 +182,7 @@ const PixPayment: React.FC = () => {
             Pagamento via PIX
           </h2>
 
+          {/* Cronômetro */}
           <Card className="mb-4 shadow-sm">
             <CardHeader className="pb-1 pt-3 px-4">
               <CardTitle className="text-sm flex items-center">
@@ -191,6 +203,7 @@ const PixPayment: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Erro de conexão com a API */}
           {apiConnectionError && (
             <Alert variant="destructive" className="mb-4">
               <AlertTriangle className="h-4 w-4" />
@@ -209,6 +222,7 @@ const PixPayment: React.FC = () => {
             </Alert>
           )}
 
+          {/* QR Code */}
           {!apiConnectionError && (
             <Card className="mb-4 shadow-sm">
               <CardHeader className="pb-1 pt-3 px-4">
@@ -222,12 +236,16 @@ const PixPayment: React.FC = () => {
                   <div className="w-52 h-52 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-govblue-600"></div>
                   </div>
-                ) : (
+                ) : pixData?.qrCodeImage ? (
                   <img 
-                    src={QR_CODE_IMAGE_URL}
+                    src={`data:image/png;base64,${pixData.qrCodeImage}`} 
                     alt="QR Code PIX" 
                     className="w-52 h-52"
                   />
+                ) : (
+                  <div className="w-52 h-52 border-2 border-dashed border-gray-300 flex items-center justify-center mb-2">
+                    <QrCode className="h-24 w-24 text-gray-400" />
+                  </div>
                 )}
                 <p className="text-xs text-center text-gray-500 mt-2">
                   Escaneie o QR Code com o aplicativo do seu banco
@@ -236,6 +254,7 @@ const PixPayment: React.FC = () => {
             </Card>
           )}
 
+          {/* Código PIX */}
           {!apiConnectionError && (
             <Card className="mb-4 shadow-sm">
               <CardHeader className="pb-1 pt-3 px-4">
@@ -270,6 +289,7 @@ const PixPayment: React.FC = () => {
             </Card>
           )}
 
+          {/* Status do pagamento */}
           {paymentStatus && !apiConnectionError && (
             <Card className="mb-4 shadow-sm">
               <CardHeader className="pb-1 pt-3 px-4">
@@ -292,6 +312,7 @@ const PixPayment: React.FC = () => {
             </Card>
           )}
 
+          {/* Alerta de multa */}
           <Alert variant="destructive" className="mb-4 py-2 px-3 bg-red-50">
             <AlertTriangle className="h-4 w-4 text-red-600" />
             <AlertTitle className="text-xs font-semibold text-red-700 ml-2">
@@ -302,6 +323,7 @@ const PixPayment: React.FC = () => {
             </AlertDescription>
           </Alert>
 
+          {/* Instruções */}
           <div className="p-2 bg-amber-50 border-l-4 border-amber-500 rounded-r-md mb-4 text-xs">
             <p className="text-amber-800">
               Após a confirmação do pagamento, seu Abono Salarial no valor de 
