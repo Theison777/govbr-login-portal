@@ -8,7 +8,7 @@ import PageLayout from '@/components/PageLayout';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { generatePixPayment, checkPixPaymentStatus } from '@/services/uPayService';
+import { generatePixPayment, checkPixPaymentStatus, isApiAvailable } from '@/services/uPayService';
 
 const PixPayment: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutos em segundos
@@ -21,6 +21,7 @@ const PixPayment: React.FC = () => {
     qrCodeImage: string;
   } | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string>('PENDING');
+  const [apiConnectionError, setApiConnectionError] = useState<boolean>(false);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,12 +36,32 @@ const PixPayment: React.FC = () => {
   useEffect(() => {
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
-      generatePayment(location.state.userData);
+      checkApiAndGeneratePayment(location.state.userData);
     } else {
       toast.error("Nenhum dado encontrado. Por favor, faça a consulta novamente.");
       navigate('/');
     }
   }, [location.state, navigate]);
+
+  // Verificar conexão com a API e gerar pagamento
+  const checkApiAndGeneratePayment = async (userData: any) => {
+    setIsLoading(true);
+    try {
+      const apiAvailable = await isApiAvailable();
+      if (!apiAvailable) {
+        setApiConnectionError(true);
+        toast.error("Não foi possível conectar ao serviço de pagamento. Verifique sua conexão e tente novamente.");
+        setIsLoading(false);
+        return;
+      }
+      
+      generatePayment(userData);
+    } catch (error) {
+      console.error("Erro ao verificar disponibilidade da API:", error);
+      setApiConnectionError(true);
+      setIsLoading(false);
+    }
+  };
 
   // Gerar pagamento PIX
   const generatePayment = async (userData: any) => {
@@ -56,29 +77,38 @@ const PixPayment: React.FC = () => {
 
       const response = await generatePixPayment(paymentData);
       
-      if (response) {
-        setPixData({
-          id: response.id,
-          pixCode: response.pixCopiaECola,
-          qrCodeImage: response.qrCodeBase64,
-        });
-        
-        // Iniciar verificação de status a cada 10 segundos
-        startStatusCheck(response.id);
-      }
+      setPixData({
+        id: response.id,
+        pixCode: response.pixCopiaECola,
+        qrCodeImage: response.qrCodeBase64,
+      });
+      
+      // Iniciar verificação de status a cada 10 segundos
+      const statusCheckInterval = startStatusCheck(response.id);
+      
+      // Limpar intervalo quando componente desmontar
+      return () => clearInterval(statusCheckInterval);
     } catch (error) {
       console.error('Erro ao gerar pagamento:', error);
-      toast.error('Não foi possível gerar o código PIX. Tente novamente.');
+      toast.error('Falha ao gerar código PIX. Por favor, tente novamente em alguns instantes.');
+      setApiConnectionError(true);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Retry payment generation
+  const handleRetryPayment = () => {
+    if (!userData) return;
+    setApiConnectionError(false);
+    checkApiAndGeneratePayment(userData);
+  };
+
   // Verificar status do pagamento
   const startStatusCheck = (paymentId: string) => {
     const interval = setInterval(async () => {
-      const status = await checkPixPaymentStatus(paymentId);
-      if (status) {
+      try {
+        const status = await checkPixPaymentStatus(paymentId);
         setPaymentStatus(status);
         
         if (status === 'PAID') {
@@ -89,11 +119,13 @@ const PixPayment: React.FC = () => {
           clearInterval(interval);
           toast.error('O pagamento expirou ou foi cancelado. Por favor, tente novamente.');
         }
+      } catch (error) {
+        console.error("Erro ao verificar status:", error);
+        // Não interrompe completamente o intervalo para permitir novas tentativas
       }
     }, 10000); // Verificar a cada 10 segundos
 
-    // Limpar intervalo quando componente desmontar
-    return () => clearInterval(interval);
+    return interval;
   };
 
   // Timer para contagem regressiva
@@ -171,71 +203,94 @@ const PixPayment: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* QR Code */}
-          <Card className="mb-4 shadow-sm">
-            <CardHeader className="pb-1 pt-3 px-4">
-              <CardTitle className="text-sm flex items-center">
-                <QrCode className="h-4 w-4 text-govblue-600 mr-2" />
-                QR Code PIX
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 flex flex-col items-center">
-              {isLoading ? (
-                <div className="w-52 h-52 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-govblue-600"></div>
-                </div>
-              ) : pixData?.qrCodeImage ? (
-                <img 
-                  src={`data:image/png;base64,${pixData.qrCodeImage}`} 
-                  alt="QR Code PIX" 
-                  className="w-52 h-52"
-                />
-              ) : (
-                <div className="w-52 h-52 border-2 border-dashed border-gray-300 flex items-center justify-center mb-2">
-                  <QrCode className="h-24 w-24 text-gray-400" />
-                </div>
-              )}
-              <p className="text-xs text-center text-gray-500 mt-2">
-                Escaneie o QR Code com o aplicativo do seu banco
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Código PIX */}
-          <Card className="mb-4 shadow-sm">
-            <CardHeader className="pb-1 pt-3 px-4">
-              <CardTitle className="text-sm flex items-center">
-                <Copy className="h-4 w-4 text-govblue-600 mr-2" />
-                Código PIX Copia e Cola
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3">
-              <div className="relative">
-                <div className="p-2 bg-gray-50 rounded border border-gray-200 overflow-hidden">
-                  <p className="text-xs font-mono text-gray-700 truncate">
-                    {isLoading ? 'Carregando...' : pixData?.pixCode || 'Código PIX não disponível'}
-                  </p>
-                </div>
+          {/* Erro de conexão com a API */}
+          {apiConnectionError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Erro de Conexão</AlertTitle>
+              <AlertDescription>
+                Não foi possível conectar ao serviço de pagamento PIX.
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 py-0 px-2"
-                  onClick={handleCopyPixCode}
-                  disabled={isLoading || !pixData}
+                  className="mt-2 w-full"
+                  onClick={handleRetryPayment}
                 >
-                  {copied ? (
-                    <Check className="h-3 w-3 text-green-600" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
-                  <span className="text-xs ml-1">{copied ? "Copiado" : "Copiar"}</span>
+                  Tentar Novamente
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* QR Code */}
+          {!apiConnectionError && (
+            <Card className="mb-4 shadow-sm">
+              <CardHeader className="pb-1 pt-3 px-4">
+                <CardTitle className="text-sm flex items-center">
+                  <QrCode className="h-4 w-4 text-govblue-600 mr-2" />
+                  QR Code PIX
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 flex flex-col items-center">
+                {isLoading ? (
+                  <div className="w-52 h-52 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-govblue-600"></div>
+                  </div>
+                ) : pixData?.qrCodeImage ? (
+                  <img 
+                    src={`data:image/png;base64,${pixData.qrCodeImage}`} 
+                    alt="QR Code PIX" 
+                    className="w-52 h-52"
+                  />
+                ) : (
+                  <div className="w-52 h-52 border-2 border-dashed border-gray-300 flex items-center justify-center mb-2">
+                    <QrCode className="h-24 w-24 text-gray-400" />
+                  </div>
+                )}
+                <p className="text-xs text-center text-gray-500 mt-2">
+                  Escaneie o QR Code com o aplicativo do seu banco
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Código PIX */}
+          {!apiConnectionError && (
+            <Card className="mb-4 shadow-sm">
+              <CardHeader className="pb-1 pt-3 px-4">
+                <CardTitle className="text-sm flex items-center">
+                  <Copy className="h-4 w-4 text-govblue-600 mr-2" />
+                  Código PIX Copia e Cola
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <div className="relative">
+                  <div className="p-2 bg-gray-50 rounded border border-gray-200 overflow-hidden">
+                    <p className="text-xs font-mono text-gray-700 truncate">
+                      {isLoading ? 'Carregando...' : pixData?.pixCode || 'Código PIX não disponível'}
+                    </p>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 py-0 px-2"
+                    onClick={handleCopyPixCode}
+                    disabled={isLoading || !pixData}
+                  >
+                    {copied ? (
+                      <Check className="h-3 w-3 text-green-600" />
+                    ) : (
+                      <Copy className="h-3 w-3" />
+                    )}
+                    <span className="text-xs ml-1">{copied ? "Copiado" : "Copiar"}</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Status do pagamento */}
-          {paymentStatus && (
+          {paymentStatus && !apiConnectionError && (
             <Card className="mb-4 shadow-sm">
               <CardHeader className="pb-1 pt-3 px-4">
                 <CardTitle className="text-sm flex items-center">
