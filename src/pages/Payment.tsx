@@ -75,8 +75,17 @@ const Payment: React.FC = () => {
         </div>
 
         {showIframe && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg w-full max-w-3xl h-[80vh] relative">
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col justify-center items-center p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl mb-2 p-3">
+              <div className="flex items-center">
+                <AlertTriangle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0" />
+                <p className="text-red-700 font-medium">
+                  Realize o pagamento da multa ou caso contrário seu nome ficará irregular no Serasa e será aplicada uma multa de R$2.153,33
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg w-full max-w-4xl h-[85vh] relative">
               <div className="absolute top-2 right-2">
                 <Button 
                   variant="ghost" 
