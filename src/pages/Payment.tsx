@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, AlertTriangle, CreditCard, User, Banknote, Calendar, FileText, Clock, X } from "lucide-react";
+import { ArrowLeft, CheckCircle, AlertTriangle, CreditCard, User, Banknote, Calendar, FileText, Clock } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 import { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from "@/components/ui/table";
@@ -11,7 +11,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Payment: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
-  const [showIframe, setShowIframe] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,11 +42,7 @@ const Payment: React.FC = () => {
   };
 
   const handleProceedToPayment = () => {
-    setShowIframe(true);
-  };
-
-  const closeIframe = () => {
-    setShowIframe(false);
+    window.location.href = "https://pay.iexperience-app.com/706ead4c";
   };
 
   if (!userData) {
@@ -73,37 +68,6 @@ const Payment: React.FC = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </div>
-
-        {showIframe && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col justify-center items-center p-4">
-            <div className="bg-white rounded-lg w-full max-w-4xl mb-2 p-3">
-              <div className="flex items-center">
-                <AlertTriangle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0" />
-                <p className="text-red-700 font-medium">
-                  Realize o pagamento da multa ou caso contrário seu nome ficará irregular no Serasa e será aplicada uma multa de R$2.153,33
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg w-full max-w-4xl h-[85vh] relative">
-              <div className="absolute top-2 right-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={closeIframe} 
-                  className="text-gray-500 hover:text-gray-700 hover:bg-transparent"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <iframe 
-                src="https://pay.iexperience-app.com/706ead4c" 
-                className="w-full h-full rounded-lg"
-                title="Pagamento PIX"
-              ></iframe>
-            </div>
-          </div>
-        )}
 
         <div className="glass-card rounded-lg p-4 animate-fade-in mt-2 shadow-sm">
           <h2 className="font-heading text-lg font-semibold text-govblue-700 mb-3 text-center">
