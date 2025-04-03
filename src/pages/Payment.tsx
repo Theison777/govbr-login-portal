@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -171,8 +170,7 @@ const Payment: React.FC = () => {
             <div className="flex items-start">
               <Clock className="h-4 w-4 text-amber-600 mt-0.5 mr-2 flex-shrink-0" />
               <p className="text-amber-800">
-                Para evitar o bloqueio do CPF e suspensão das chaves PIX, regularize o mais rápido possível.
-                Este pagamento refere-se apenas à regularização do impedimento.
+                Para liberar o pagamento do valor do Abono Salarial de R$1.518,00 e evitar que seu nome seja enviado ao SERASA pague a multa atual de R$89,61
               </p>
             </div>
           </div>
