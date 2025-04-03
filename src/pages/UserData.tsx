@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -433,7 +432,7 @@ const UserData: React.FC = () => {
                       </div>
                       
                       <div className="mt-4 flex justify-center">
-                        <Button onClick={handleShowImpediments} variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">
+                        <Button onClick={handleShowImpediments} variant="destructive" className="w-full text-white hover:bg-red-700">
                           <AlertTriangle className="mr-2 h-4 w-4 flex-shrink-0" />
                           Ver Impedimentos
                         </Button>
@@ -510,5 +509,4 @@ const UserData: React.FC = () => {
     </PageLayout>;
 };
 
-// Add the missing default export
 export default UserData;
