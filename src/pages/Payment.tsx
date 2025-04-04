@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -109,10 +110,10 @@ const Payment: React.FC = () => {
     <PageLayout>
       {/* Desktop Modal Iframe */}
       {showIframe && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-          <div className="relative bg-white rounded-lg w-full max-w-4xl h-[90vh] flex flex-col">
-            <div className="flex justify-between p-2 items-center">
-              <Alert className="bg-amber-50 border-amber-300 flex-1 mx-2">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-start pt-10 p-4">
+          <div className="relative bg-white rounded-lg w-full max-w-3xl h-[85vh] flex flex-col">
+            <div className="flex justify-between p-2 items-center border-b">
+              <Alert className="bg-amber-50 border-amber-300 flex-1 mx-2 mb-0">
                 <AlertTriangle className="h-5 w-5 text-amber-600" />
                 <AlertDescription className="text-amber-800 font-medium text-sm">
                   Realize o pagamento da multa ou caso contrário seu nome ficará irregular no Serasa e será aplicada uma multa de R$2.153,33
@@ -127,7 +128,7 @@ const Payment: React.FC = () => {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full px-4">
               <iframe
                 id="pagamentoIframe"
                 className="w-full h-full border-0"
@@ -141,17 +142,16 @@ const Payment: React.FC = () => {
 
       {/* Mobile Sheet Iframe */}
       <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
-        <SheetContent side="bottom" className="h-[90vh] p-0 pt-6">
-          <SheetHeader className="px-4 py-2">
-            <Alert className="bg-amber-50 border-amber-300 mb-2">
+        <SheetContent side="bottom" className="h-[90vh] p-0">
+          <div className="px-4 py-2 border-b">
+            <Alert className="bg-amber-50 border-amber-300 mb-0">
               <AlertTriangle className="h-5 w-5 text-amber-600" />
               <AlertDescription className="text-amber-800 font-medium text-sm">
                 Realize o pagamento da multa ou caso contrário seu nome ficará irregular no Serasa e será aplicada uma multa de R$2.153,33
               </AlertDescription>
             </Alert>
-            <SheetTitle className="text-center">Pagamento</SheetTitle>
-          </SheetHeader>
-          <div className="h-full pb-12">
+          </div>
+          <div className="h-full px-2">
             <iframe
               id="mobilePagamentoIframe"
               className="w-full h-full border-0"
