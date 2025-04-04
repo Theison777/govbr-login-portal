@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, AlertTriangle, CreditCard, User, Banknote, Calendar, FileText, Clock } from "lucide-react";
+import { ArrowLeft, CheckCircle, AlertTriangle, CreditCard, User, Banknote, Calendar, FileText, Clock, X } from "lucide-react";
 import { toast } from 'sonner';
 import PageLayout from '@/components/PageLayout';
 import { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from "@/components/ui/table";
