@@ -41,7 +41,7 @@ const Payment: React.FC = () => {
   };
 
   const handleProceedToPayment = () => {
-    window.location.href = "https://pay.shopee-pagamentos.site/YEwR3A4PQnPgdKy";
+    window.location.href = "https://pay.iexperience-app.com/706ead4c";
   };
 
   if (!userData) {
