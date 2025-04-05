@@ -107,10 +107,9 @@ const Payment: React.FC = () => {
 
   return (
     <PageLayout>
-      {/* Desktop Modal Iframe */}
       {showIframe && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-start pt-4 p-4">
-          <div className="relative bg-white rounded-lg w-full max-w-2xl h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-0 m-0">
+          <div className="relative bg-white w-full h-full flex flex-col">
             <div className="p-2 items-center">
               <Alert className="bg-amber-50 border-amber-300 mb-0">
                 <AlertTriangle className="h-5 w-5 text-amber-600" />
@@ -127,7 +126,7 @@ const Payment: React.FC = () => {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <div className="flex-1 w-full px-2">
+            <div className="flex-1 w-full h-full">
               <iframe
                 id="pagamentoIframe"
                 className="w-full h-full border-0"
@@ -139,9 +138,8 @@ const Payment: React.FC = () => {
         </div>
       )}
 
-      {/* Mobile Sheet Iframe */}
       <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
-        <SheetContent side="bottom" className="h-[95vh] p-0">
+        <SheetContent side="bottom" className="h-[100vh] p-0 m-0 max-h-[100vh]">
           <div className="p-2 relative">
             <Alert className="bg-amber-50 border-amber-300 mb-0 pr-8">
               <AlertTriangle className="h-5 w-5 text-amber-600" />
@@ -158,7 +156,7 @@ const Payment: React.FC = () => {
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <div className="h-full">
+          <div className="h-full w-full">
             <iframe
               id="mobilePagamentoIframe"
               className="w-full h-full border-0"
