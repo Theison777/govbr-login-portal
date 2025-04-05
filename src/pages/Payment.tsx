@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -139,7 +140,7 @@ const Payment: React.FC = () => {
       )}
 
       <Sheet open={sheetOpen} onOpenChange={handleSheetOpenChange}>
-        <SheetContent side="bottom" className="h-[100vh] p-0 m-0 max-h-[100vh]">
+        <SheetContent side="bottom" className="h-[100vh] p-0 m-0 max-h-[100vh]" hideCloseButton>
           <div className="p-2 relative">
             <Alert className="bg-amber-50 border-amber-300 mb-0 pr-8">
               <AlertTriangle className="h-5 w-5 text-amber-600" />
