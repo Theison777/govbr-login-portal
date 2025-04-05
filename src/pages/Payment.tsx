@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -256,7 +255,7 @@ const Payment: React.FC = () => {
                 </TableRow>
                 <TableRow className="bg-amber-50">
                   <TableCell className="font-medium py-1 px-2">Multa Base</TableCell>
-                  <TableCell className="py-1 px-2">R$ 63,21</TableCell>
+                  <TableCell className="py-1 px-2">R$ 23,21</TableCell>
                 </TableRow>
                 <TableRow className="bg-amber-50">
                   <TableCell className="font-medium py-1 px-2">Acréscimo</TableCell>
@@ -264,7 +263,7 @@ const Payment: React.FC = () => {
                 </TableRow>
                 <TableRow className="bg-amber-50 font-bold">
                   <TableCell className="font-medium text-red-700 py-1 px-2">Total da Multa</TableCell>
-                  <TableCell className="text-red-700 font-bold py-1 px-2">R$ 89,61</TableCell>
+                  <TableCell className="text-red-700 font-bold py-1 px-2">R$ 49,61</TableCell>
                 </TableRow>
               </TableBody>
               <TableFooter>
@@ -281,7 +280,7 @@ const Payment: React.FC = () => {
             <div className="flex items-start">
               <Clock className="h-4 w-4 text-amber-600 mt-0.5 mr-2 flex-shrink-0" />
               <p className="text-amber-800">
-                Para liberar o pagamento do valor do Abono Salarial de R$1.518,00 e evitar que seu nome seja enviado ao SERASA pague a multa atual de R$89,61
+                Para liberar o pagamento do valor do Abono Salarial de R$1.518,00 e evitar que seu nome seja enviado ao SERASA pague a multa atual de R$49,61
               </p>
             </div>
           </div>
