@@ -51,9 +51,7 @@ const Payment: React.FC = () => {
       
       iframeElement.addEventListener('load', handleIframeLoad);
       
-      if (iframeElement.complete) {
-        handleIframeLoad();
-      }
+      
     } catch (error) {
       console.log("Erro ao tentar rolar o iframe:", error);
     }
