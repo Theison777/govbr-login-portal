@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -33,6 +32,33 @@ const Payment: React.FC = () => {
     }
   }, [location.state, navigate]);
 
+  const scrollIframeToBottom = (iframeElement: HTMLIFrameElement | null) => {
+    if (!iframeElement) return;
+    
+    try {
+      const handleIframeLoad = () => {
+        try {
+          if (iframeElement.contentWindow) {
+            iframeElement.contentWindow.scrollTo({
+              top: iframeElement.contentWindow.document.body.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+        } catch (error) {
+          console.log("Não foi possível acessar o conteúdo do iframe devido a políticas de segurança");
+        }
+      };
+      
+      iframeElement.addEventListener('load', handleIframeLoad);
+      
+      if (iframeElement.complete) {
+        handleIframeLoad();
+      }
+    } catch (error) {
+      console.log("Erro ao tentar rolar o iframe:", error);
+    }
+  };
+
   const formatCPF = (cpf: string) => {
     if (!cpf) return "";
     const digitsOnly = cpf.replace(/\D/g, '');
@@ -64,6 +90,7 @@ const Payment: React.FC = () => {
         const mobileIframe = document.getElementById("mobilePagamentoIframe") as HTMLIFrameElement;
         if (mobileIframe) {
           mobileIframe.src = url;
+          scrollIframeToBottom(mobileIframe);
         }
       }, 100);
     } else {
@@ -73,6 +100,7 @@ const Payment: React.FC = () => {
         if (iframe) {
           iframe.src = url;
           iframe.style.display = "block";
+          scrollIframeToBottom(iframe);
         }
       }, 100);
     }
